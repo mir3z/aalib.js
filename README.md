@@ -9,9 +9,7 @@ It is written entirely in JavaScript and is intended to use in web browsers.
 * [Mona](http://mir3z.github.io/aalib.js/examples/mona.html) ([original](http://mir3z.github.io/aalib.js/resources/mona.png))
 * [Lenna](http://mir3z.github.io/aalib.js/examples/lenna.html) ([original](http://mir3z.github.io/aalib.js/resources/lenna.png))
 * [Marylin](http://mir3z.github.io/aalib.js/examples/marylin.html) ([original](http://mir3z.github.io/aalib.js/resources/marylin.jpg))
-* [Big Buck Bunny](http://mir3z.github.io/aalib.js/examples/bbb.html)
-
-If you have any troubles seeing examples, just clone the repository and browse them locally. 
+* [Big Buck Bunny](http://mir3z.github.io/aalib.js/examples/bbb.html) 
 
 ## Usage
 
