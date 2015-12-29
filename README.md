@@ -71,9 +71,9 @@ and returns stream/
 * <code>fromVideoElement(<i>video:HTMLVideoElement</i>, <i>options:object</i>)</code> - creates `VideoReader` which 
 reads from given `HTMLVideoElement` and returns stream.
 
-Both methods accepts following options:
+Both methods accepts the following options:
 
-* `autoplay:boolean` - If `true`, start playing video automatically
+* `autoplay:boolean` - If `true`, start playing video automatically, default: `false`
 
 `aalib.read.video`
 
