@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>aalib.js :: Big Buck Bunny</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <video src="../resources/bbb_720x480_30mb.mp4" controls></video>
+
+    <canvas id="video-scene"></canvas>
+    <script type="text/javascript" src="../build/aalib.js"></script>
+    <script type="text/javascript">
+        aalib.read.video.fromVideoElement(document.querySelector("video"))
+            .pipe(aalib.aa({ width: 165, height: 68 }))
+            .pipe(aalib.render.canvas({
+                width: 696,
+                height: 476,
+                el: document.querySelector("#video-scene")
+            }))
+            .end();
+    </script>
+</body>
+</html>

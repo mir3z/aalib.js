@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>aalib.js :: Mona</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <script type="text/javascript" src="../build/aalib.js"></script>
+    <script type="text/javascript">
+        aalib.read.image.fromURL("../resources/mona.png")
+            .pipe(aalib.aa({ width: 200, height: 160 }))
+            .pipe(aalib.render.html())
+            .pipe(function (el) {
+                document.body.appendChild(el);
+            })
+            .end();
+    </script>
+</body>
+</html>

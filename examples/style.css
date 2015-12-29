@@ -1,0 +1,18 @@
+body {
+    color: #000;
+    background-color: #fff;
+}
+
+.inverse {
+    background-color: #000;
+    color: #fff;
+}
+
+pre {
+    font-size: 7px;
+    text-align: center;
+}
+
+#video-scene {
+    border: 1px solid #afafaf;
+}

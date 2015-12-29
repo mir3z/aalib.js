@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>aalib.js :: Marylin</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body class="inverse">
+    <script type="text/javascript" src="../build/aalib.js"></script>
+    <script type="text/javascript">
+        aalib.read.image.fromURL("../resources/marylin.jpg")
+            .pipe(aalib.aa({ width: 530, height: 160, colorful: true }))
+            .pipe(aalib.filter.inverse())
+            .pipe(aalib.render.html())
+            .pipe(function (el) {
+                document.body.appendChild(el);
+            })
+            .end();
+    </script>
+</body>
+</html>
