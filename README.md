@@ -73,8 +73,6 @@ Both methods accepts the following options:
 
 * `autoplay:boolean` - If `true`, start playing video automatically, default: `false`
 
-`aalib.read.video`
-
 ### Filters
 
 Filters are processors which changes every component of an image. When a filter is applied to a regular image it 
