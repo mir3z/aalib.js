@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "description": "mirz <mirz.hq@gmail.com>",
   "main": "build/aalib.js",
-  "author": "",
+  "author": "mirz <that.mirz@gmail.com>",
   "license": "MIT",
+  "repository": "https://github.com/mir3z/aali",
   "scripts": {
     "dev": "webpack-dev-server --hot --inline --progress --colors --config dev/webpack.config.js",
     "build": "webpack --progress --colors",
