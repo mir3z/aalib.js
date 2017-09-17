@@ -1,6 +1,7 @@
 (function () {
     var ImageReader = require('readers/ImageReader');
     var VideoReader = require('readers/VideoReader');
+    var ImageDataReader = require('readers/ImageDataReader');
 
     var inverse = require('filters/inverse');
     var contrast = require('filters/contrast');
@@ -40,6 +41,27 @@
             el: document.querySelector("#video-scene canvas")
         }))
         .end();
+
+    // Draw to canvas
+    var canvas = document.getElementById("drawing");
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#222";
+    ctx.fillRect(0, 0, 160, 240);
+    ctx.fillStyle = "#eee";
+    ctx.fillRect(160, 0, 160, 240);
+    ctx.fillStyle = "#999";
+    ctx.fillRect(160-40, 120-40, 80, 80);
+
+    // get image data
+    var idata = ctx.getImageData(0, 0, 320, 240);
+
+    // render using aa
+    ImageDataReader.fromImageData(idata)
+        .pipe(aa({ width: 80, height: 25, colorful: false }))
+        .pipe(html({ fontset: charset }))
+        .pipe(appendToBody)
+        .end();
+
 
     function appendToBody(el) {
         el.className = 'aa';
