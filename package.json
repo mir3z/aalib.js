@@ -2,8 +2,10 @@
   "name": "aalib.js",
   "version": "0.1.0",
   "description": "mirz <mirz.hq@gmail.com>",
-  "author": "",
+  "main": "build/aalib.js",
+  "author": "mirz <that.mirz@gmail.com>",
   "license": "MIT",
+  "repository": "https://github.com/mir3z/aalib.js",
   "scripts": {
     "dev": "webpack-dev-server --hot --inline --progress --colors --config dev/webpack.config.js",
     "build": "webpack --progress --colors",
