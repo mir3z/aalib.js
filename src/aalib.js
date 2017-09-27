@@ -1,7 +1,8 @@
 module.exports = {
     read: {
         image: require('./readers/ImageReader'),
-        video: require('./readers/VideoReader')
+        video: require('./readers/VideoReader'),
+        imageData: require('./readers/ImageDataReader')
     },
     filter: {
         linear: require('./filters/linear'),

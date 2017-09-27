@@ -73,6 +73,14 @@ Both methods accepts the following options:
 
 * `autoplay:boolean` - If `true`, start playing video automatically, default: `false`
 
+#### ImageDataReader
+
+Exposed as `aalib.read.imageData`. Use the `fromImageData` factory method to create a stream from an image data object.
+
+An image data object contains three mandatory fields; `width`, `height`, and `data`. The first two describe the dimensions of the image data, while the third is an array of _width * height * 4_ elements, where each pixels is represented as r,g,b,alpha.
+
+ImageData object are returned for example when getting pixel data from a canvas, or when rendering to an offscreen buffer using WebGL.
+
 ### Filters
 
 Filters are processors which changes every component of an image. When a filter is applied to a regular image it 
