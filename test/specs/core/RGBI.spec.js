@@ -1,57 +1,65 @@
-var RGBI = require('core/RGBI');
+import { expect } from "chai";
 
-describe('RGBI object', () => {
+import RGBI from "../../../src/core/RGBI";
 
-    it('should set default values', () => {
-        var rgbi = new RGBI();
+describe("core/RGBI", () => {
 
-        expect(rgbi).toMatchRGBI(0, 0, 0, 0);
+    it("sets default values", () => {
+        const rgbi = new RGBI();
+
+        expectRGBI(rgbi, 0, 0, 0, 0);
     });
 
-    it('should set provided values', () => {
-        var rgbi = new RGBI(10, 20, 40, 50);
+    it("sets provided values", () => {
+        const rgbi = new RGBI(10, 20, 40, 50);
 
-        expect(rgbi).toMatchRGBI(10, 20, 40, 50);
+        expectRGBI(rgbi, 10, 20, 40, 50);
     });
 
-    it('should multiply by value', () => {
-        var rgbi = new RGBI(10, 20, 40, 50);
+    it("multiplies by value", () => {
+        const rgbi = new RGBI(10, 20, 40, 50);
 
         rgbi.mul(2);
 
-        expect(rgbi).toMatchRGBI(10, 20, 40, 100);
+        expectRGBI(rgbi, 10, 20, 40, 100);
     });
 
-    it('should add value', () => {
-        var rgbi = new RGBI(100, 200, 0, 100);
+    it("adds value", () => {
+        const rgbi = new RGBI(100, 200, 0, 100);
 
         rgbi.add(100);
 
-        expect(rgbi).toMatchRGBI(100, 200, 0, 200);
+        expectRGBI(rgbi, 100, 200, 0, 200);
     });
 
-    it('should divide by value', () => {
-        var rgbi = new RGBI(100, 200, 0, 200);
+    it("divides by value", () => {
+        const rgbi = new RGBI(100, 200, 0, 200);
 
         rgbi.div(10);
 
-        expect(rgbi).toMatchRGBI(100, 200, 0, 20);
+        expectRGBI(rgbi, 100, 200, 0, 20);
     });
 
-    it('should invert intensity', () => {
-        var rgbi = new RGBI(0, 200, 255, 100);
+    it("inverts intensity", () => {
+        const rgbi = new RGBI(0, 200, 255, 100);
 
         rgbi.inverse();
 
-        expect(rgbi).toMatchRGBI(0, 200, 255, 155);
+        expectRGBI(rgbi, 0, 200, 255, 155);
     });
 
-    it('should clamp intensity', () => {
-        var rgbi = new RGBI(-100, 255, 100, 500);
+    it("clamps intensity", () => {
+        const rgbi = new RGBI(-100, 255, 100, 500);
 
         rgbi.clamp();
 
-        expect(rgbi).toMatchRGBI(-100, 255, 100, 255);
+        expectRGBI(rgbi, -100, 255, 100, 255);
     });
 
+    function expectRGBI(subject, r, g, b, i) {
+        expect(subject.r).to.eql(r);
+        expect(subject.g).to.eql(g);
+        expect(subject.b).to.eql(b);
+        expect(subject.intensity).to.eql(i);
+    }
 });

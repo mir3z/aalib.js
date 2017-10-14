@@ -1,48 +1,50 @@
-var htmlRenderer = require('renderers/HTMLRenderer');
-var Image = require('core/Image');
-var RGBI = require('core/RGBI');
+import { expect } from "chai";
 
-describe('HTMLRenderer', () => {
+import htmlRenderer from "../../../src/renderers/HTMLRenderer";
 
-    it('should render as HTML element', () => {
-        var render = createRenderer();
+import Image from "../../../src/core/Image";
+import RGBI from "../../../src/core/RGBI";
 
-        var el = render(createTestImage());
+describe("renderers/HTMLRenderer", () => {
 
-        expectHTMLElement(el, { tagName: 'pre', htmlContent: '.M' });
+    it("renders as HTML element", () => {
+        const render = createRenderer();
+
+        const el = render(createTestImage());
+
+        expectHTMLElement(el, { tagName: "pre", htmlContent: ".M" });
     });
 
-    it('should render as HTML element of given type', () => {
-        var render = createRenderer({
-            tagName: 'div'
+    it("renders as HTML element of given type", () => {
+        const render = createRenderer({
+            tagName: "div"
         });
 
-        var el = render(createTestImage());
+        const el = render(createTestImage());
 
-        expectHTMLElement(el, { tagName: 'div', htmlContent: '.M' });
+        expectHTMLElement(el, { tagName: "div", htmlContent: ".M" });
     });
 
-    it('should preserve colors if enabled', () => {
-        var render = createRenderer();
+    it("preserves colors if enabled", () => {
+        const render = createRenderer();
 
-        var image = createTestImage();
+        const image = createTestImage();
         image.colorful = true;
-        var el = render(image);
+        const el = render(image);
 
-        expectHTMLElement(el, { tagName: 'pre' });
-        expect(el.children.length).toBe(2);
-        expect(el.children[0].style.color.toLowerCase()).toBe('rgb(0, 0, 0)');
-        expect(el.children[1].style.color.toLowerCase()).toBe('rgb(255, 255, 255)');
+        expectHTMLElement(el, { tagName: "pre" });
+        expect(el.children).to.have.lengthOf(2);
+        expect(el.children[0].style.color.toLowerCase()).to.eql("rgb(0, 0, 0)");
+        expect(el.children[1].style.color.toLowerCase()).to.eql("rgb(255, 255, 255)");
     });
 
     function expectHTMLElement(el, checks) {
         checks = checks || {};
 
-        expect(el).toEqual(jasmine.any(Object));
-        expect(el.nodeType).toBe(1);
+        expect(el.nodeType).to.eql(1);
 
-        checks.tagName && expect(el.nodeName.toLowerCase()).toBe(checks.tagName);
-        checks.htmlContent && expect(el.innerHTML).toEqual(checks.htmlContent);
+        checks.tagName && expect(el.nodeName.toLowerCase()).to.eql(checks.tagName);
+        checks.htmlContent && expect(el.innerHTML).to.eql(checks.htmlContent);
     }
 
     function createRenderer(options) {
@@ -52,7 +54,7 @@ describe('HTMLRenderer', () => {
     }
 
     function createTestImage() {
-        var image = new Image(2, 1);
+        const image = new Image(2, 1);
 
         image.data[0] = new RGBI(0, 0, 0, 255);
         image.data[1] = new RGBI(255, 255, 255, 0);

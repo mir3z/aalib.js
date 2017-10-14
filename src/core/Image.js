@@ -1,7 +1,6 @@
-var each = require('lodash/collection/each');
-var RGB = require('./RGB');
+import RGB from "./RGB";
 
-class Image {
+export default class Image {
 
     constructor(width, height) {
         this.width = width;
@@ -14,15 +13,15 @@ class Image {
     }
 
     filter(fn) {
-        each(this.data, fn);
+        this.data.forEach(fn);
         return this;
     }
 
     toImageData() {
-        var data = [];
-        var color;
+        const data = [];
+        let color;
 
-        for (var i = 0; i < this.data.length; i++) {
+        for (let i = 0; i < this.data.length; i++) {
             color = this.data[i];
 
             data[data.length] = color.r;
@@ -39,9 +38,9 @@ class Image {
     }
 
     static fromImageData(idata) {
-        var img = new Image(idata.width, idata.height);
+        const img = new Image(idata.width, idata.height);
 
-        for (var i = 0, len = idata.data.length; i < len; i += 4) {
+        for (let i = 0, len = idata.data.length; i < len; i += 4) {
             img.data.push(new RGB(
                 idata.data[i],
                 idata.data[i + 1],
@@ -54,8 +53,8 @@ class Image {
     }
 
     static fromHTMLImageElement(image) {
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
         ctx.canvas.width = image.naturalWidth;
         ctx.canvas.height = image.naturalHeight;
@@ -66,5 +65,3 @@ class Image {
         );
     }
 }
-
-module.exports = Image;

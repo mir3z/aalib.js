@@ -1,35 +1,37 @@
-var VideoReader = require('readers/VideoReader');
-var Stream = require('readers/Stream');
-var videoBase64 = require('resources/video.base64');
+import { expect } from "chai";
 
-describe('VideoReader', () => {
+import VideoReader from "../../../src/readers/VideoReader";
+import Stream from "../../../src/readers/Stream";
+import videoBase64 from "../../resources/video.base64";
 
-    it('should allow to construct a stream directly from URL', () => {
-        var stream = VideoReader.fromURL(videoBase64);
+describe("readers/VideoReader", () => {
 
-        expect(stream).toEqual(jasmine.any(Stream));
+    it("allows to construct a stream directly from URL", () => {
+        const stream = VideoReader.fromURL(videoBase64);
+
+        expect(stream).to.be.instanceOf(Stream);
     });
 
-    it('should allow to read image directly from URL', (done) => {
+    it("allows to read image directly from URL", done => {
         VideoReader
             .fromURL(videoBase64, { autoplay: true })
-            .pipe((video) => {
+            .pipe(video => {
                 expectTestVideo(video);
                 done();
             })
             .end();
     });
 
-    it('should allow to construct a stream directly from HTML Video element', () => {
-        var stream = VideoReader.fromVideoElement(createTestVideoElement(), { autoplay: true });
+    it("allows to construct a stream directly from HTML Video element", () => {
+        const stream = VideoReader.fromVideoElement(createTestVideoElement(), { autoplay: true });
 
-        expect(stream).toEqual(jasmine.any(Stream));
+        expect(stream).to.be.instanceOf(Stream);
     });
 
-    it('should allow to read image directly from HTML Video element', (done) => {
+    it("allows to read image directly from HTML Video element", done => {
         VideoReader
             .fromVideoElement(createTestVideoElement(), { autoplay: true })
-            .pipe((video) => {
+            .pipe(video => {
                 expectTestVideo(video);
                 done();
             })
@@ -37,14 +39,14 @@ describe('VideoReader', () => {
     });
 
     function createTestVideoElement() {
-        var video = document.createElement('video');
+        const video = document.createElement("video");
         video.src = videoBase64;
         return video;
     }
 
     function expectTestVideo(video) {
-        expect(video).not.toBeNull();
-        expect(video.width).toBe(100);
-        expect(video.height).toBe(100);
+        expect(video).not.to.be.undefined;
+        expect(video.width).to.eql(100);
+        expect(video.height).to.eql(100);
     }
 });

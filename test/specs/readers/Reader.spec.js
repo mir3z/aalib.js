@@ -1,64 +1,61 @@
-var Reader = require('readers/Reader');
-var Stream = require('readers/Stream');
+import { spy, stub } from "sinon";
+import { expect } from "chai";
 
-describe('Reader', () => {
-    var reader;
+import Reader from "../../../src/readers/Reader";
+import Stream from "../../../src/readers/Stream";
 
-    beforeEach(() => {
-        reader = new Reader();
-    });
-
-    it('should call onRead when read is called', () => {
-        spyOn(reader, 'onRead');
+describe("readers/Reader", () => {
+    it("calls onRead when read is called", () => {
+        const reader = new Reader();
+        spy(reader, "onRead");
 
         reader.read();
 
-        expect(reader.onRead).toHaveBeenCalled();
+        expect(reader.onRead.called).to.be.ok;
     });
 
-    it('should return stream when read is called', () => {
-        expect(reader.read()).toEqual(jasmine.any(Stream));
+    it("returns stream when read is called", () => {
+        const reader = new Reader();
+        expect(reader.read()).to.be.an.instanceOf(Stream);
     });
 
-    it('should pass stream writer to onRender', () => {
-        spyOn(reader, 'onRead').and.callFake((write) => {
-            write('test write');
-        });
-        spyOn(reader.stream, 'write');
+    it("passes stream writer to onRender", () => {
+        const reader = new Reader();
+        stub(reader, "onRead").callsFake(write => write("test write"));
+        spy(reader.stream, "write");
 
         reader.read();
 
-        expect(reader.stream.write).toHaveBeenCalledWith('test write');
+        expect(reader.stream.write.calledWith("test write")).to.be.ok;
     });
 
-    it('should pass error handler to onRender', () => {
-        spyOn(reader, 'onRead').and.callFake((write, error) => {
-            error('error occurred');
-        });
-        spyOn(reader, 'error');
+    it("passes error handler to onRead", () => {
+        const reader = new Reader();
+        stub(reader, "onRead").callsFake((write, error) => error("error occurred"));
+        stub(reader, "error");
 
         reader.read();
 
-        expect(reader.error).toHaveBeenCalledWith('error occurred');
+        expect(reader.error.calledWith("error occurred")).to.be.ok;
     });
 
-    describe('when read error occurred', () => {
-        it('should clear stream when error occurred', () => {
-            spyOn(reader.stream, 'clear');
+    describe("when read error occurred", () => {
+        it("clears stream", () => {
+            const reader = new Reader();
+            spy(reader.stream, "clear");
 
             try {
-                reader.error('any');
+                reader.error("any");
             } catch (e) {
                 // ignore
             }
 
-            expect(reader.stream.clear).toHaveBeenCalled();
+            expect(reader.stream.clear.called).to.be.ok;
         });
 
-        it('should log error message', () => {
-            expect(() => {
-                reader.error('any');
-            }).toThrow('any');
+        it("logs error message", () => {
+            const reader = new Reader();
+            expect(() => reader.error("any")).to.throw("any");
         });
     });
 

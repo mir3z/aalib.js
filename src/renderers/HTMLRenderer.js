@@ -1,13 +1,11 @@
-var defaults = require('lodash/object/defaults');
-var Renderer = require('./Renderer');
-var map = require('lodash/collection/map');
+import Renderer from "../../src/renderers/Renderer";
 
 class HTMLRenderer extends Renderer {
 
     constructor(options) {
-        super(defaults(options || {}, {
-            tagName: 'pre'
-        }));
+        super(Object.assign({}, {
+            tagName: "pre"
+        }, options));
 
         this.el = this.options.el || document.createElement(this.options.tagName);
         this.el.style.fontFamily = this.options.fontFamily;
@@ -20,7 +18,7 @@ class HTMLRenderer extends Renderer {
             this.colorize(image.data);
         }
 
-        var content = splitLines(image.data, image.width);
+        const content = splitLines(image.data, image.width);
 
         if (image.colorful) {
             this.el.innerHTML = content;
@@ -32,7 +30,7 @@ class HTMLRenderer extends Renderer {
     }
 
     colorize(pixels) {
-        return map(pixels, (pixel) => {
+        return pixels.map(pixel => {
             pixel.char = `<span style="color: rgb(${ pixel.r }, ${ pixel.g }, ${ pixel.b })">${ pixel.char }</span>`;
             return pixel;
         });
@@ -40,11 +38,11 @@ class HTMLRenderer extends Renderer {
 }
 
 function splitLines(colors, length) {
-    var str = '';
+    let str = "";
 
-    for (var i = 0; i < colors.length; i++) {
+    for (let i = 0; i < colors.length; i++) {
         if (i > 0 && i % length === 0) {
-            str += '\n';
+            str += "\n";
         }
         str += colors[i].char;
     }
@@ -52,15 +50,11 @@ function splitLines(colors, length) {
     return str;
 }
 
-function factory(options) {
-    var renderer = new HTMLRenderer(options);
+export default function factory(options) {
+    const renderer = new HTMLRenderer(options);
 
-    return function (data) {
-        return renderer.render(data);
-    };
+    return data => renderer.render(data);
 }
 
 factory.CHARSET = Renderer.CHARSET;
 factory.Class = HTMLRenderer;
-
-module.exports = factory;

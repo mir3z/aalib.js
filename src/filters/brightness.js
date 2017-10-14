@@ -1,13 +1,11 @@
-var linear = require('./linear');
+import linear from "./linear";
 
-function brightness(image, val) {
-    return linear(1, val || 0)(image);
-}
-
-function factory(val) {
+export default function factory(val) {
     return function (image) {
         return brightness(image, val);
     };
 }
 
-module.exports = factory;
+export function brightness(image, val) {
+    return linear(1, val || 0)(image);
+}

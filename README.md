@@ -163,4 +163,4 @@ Options:
 * `charset:string[]` - alphabet used in rendering, default: `ASCII` charset.
 
 ## License
-The MIT License (MIT). Copyright (c) 2015 mirz (mirz.hq@gmail.com)
+The MIT License (MIT). Copyright (c) 2017 mirz (that.mirz@gmail.com)

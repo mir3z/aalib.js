@@ -1,42 +1,41 @@
-var webpack = require('webpack'),
-    path = require('path');
+const path = require("path");
 
 module.exports = function (config) {
     config.set({
-        basePath: '',
-        frameworks: ['jasmine'],
+        basePath: "",
+        frameworks: ["mocha", "chai"],
         files: [
-            './test/matchers.js',
-            './test/specs/**/*.js'
+            "./test/specs/**/*.js"
         ],
         preprocessors: {
-            './test/**/*.js': ['webpack']
+            "./test/**/*.js": ["webpack"]
         },
         webpack: {
-            devtool: 'inline-source-map',
             resolve: {
-                root: [path.join(__dirname, "./test"), path.join(__dirname, "./src")]
+                modules: [path.join(__dirname, "./src"), path.join(__dirname, "./test"), "node_modules"]
             },
-            module : {
-                loaders: [
-                    { test: /\.js/, loader: 'babel' }
+            module: {
+                rules: [
+                    { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
                 ]
-            }
+            },
+            devtool: "#cheap-module-inline-source-map"
         },
         webpackMiddleware: {
             noInfo: true
         },
         plugins: [
-            require('karma-webpack'),
-            require('karma-jasmine'),
-            require('karma-chrome-launcher')
+            require("karma-webpack"),
+            require("karma-mocha"),
+            require("karma-chai"),
+            require("karma-chrome-launcher")
         ],
-        reporters: ['dots'],
+        reporters: ["dots"],
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['Chrome'],
+        browsers: ["Chrome"],
         singleRun: false
     });
 };

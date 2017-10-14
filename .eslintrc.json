@@ -1,27 +1,27 @@
 {
-    "rules": {
-        "indent": [
-            2,
-            4
-        ],
-        "quotes": [
-            2,
-            "single"
-        ],
-        "linebreak-style": [
-            2,
-            "unix"
-        ],
-        "semi": [
-            2,
-            "always"
-        ]
-    },
+    "extends": "eslint:recommended",
     "env": {
-        "es6": true,
-        "node": true,
         "browser": true,
-        "jasmine": true
+        "node": true,
+        "es6": true,
+        "mocha": true
     },
-    "extends": "eslint:recommended"
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "rules": {
+        "semi": [2, "always"],
+        "object-curly-spacing": [2, "always"],
+        "max-len": ["error", 120],
+        "quotes": ["error", "double", { "allowTemplateLiterals": true }],
+        "keyword-spacing": ["error", {"before": true, "after": true}],
+        "indent": ["error", 4, {"SwitchCase": 1}],
+        "comma-spacing": ["error", { "before": false, "after": true }],
+        "key-spacing": ["error", { "beforeColon": false, "afterColon": true }],
+        "no-trailing-spaces": ["error", { "skipBlankLines": true }],
+        "arrow-spacing": "error",
+        "no-duplicate-imports": "error",
+        "prefer-const": "error"
+    }
 }

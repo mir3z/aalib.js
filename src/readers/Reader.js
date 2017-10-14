@@ -1,6 +1,6 @@
-var Stream = require('./Stream');
+import Stream from "./Stream";
 
-class Reader {
+export default class Reader {
     constructor() {
         this.stream = new Stream();
     }
@@ -23,5 +23,3 @@ class Reader {
         throw msg;
     }
 }
-
-module.exports = Reader;

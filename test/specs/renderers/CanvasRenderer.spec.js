@@ -1,46 +1,48 @@
-var canvasRenderer = require('renderers/CanvasRenderer');
-var Image = require('core/Image');
-var RGBI = require('core/RGBI');
+import { expect } from "chai";
+import { spy } from "sinon";
 
-describe('CanvasRenderer', () => {
+import canvasRenderer from "../../../src/renderers/CanvasRenderer";
+import Image from "../../../src/core/Image";
+import RGBI from "../../../src/core/RGBI";
 
-    it('should render as Canvas element', () => {
-        var render = createRenderer();
+describe("renderers/CanvasRenderer", () => {
 
-        var el = render(createTestImage());
+    it("renders Canvas element", () => {
+        const render = createRenderer();
 
-        expect(el).toEqual(jasmine.any(Object));
-        expect(el.nodeType).toBe(1);
-        expect(el.nodeName.toLowerCase()).toBe('canvas');
+        const el = render(createTestImage());
+
+        expect(el.nodeType).to.eql(1);
+        expect(el.nodeName.toLowerCase()).to.eql("canvas");
     });
 
-    it('should set canvas size if given', () => {
-        var render = createRenderer({ width: 100, height: 110 });
+    it("sets canvas size if given", () => {
+        const render = createRenderer({ width: 100, height: 110 });
 
-        var el = render(createTestImage());
+        const el = render(createTestImage());
 
-        expect(el.width).toBe(100);
-        expect(el.height).toBe(110);
+        expect(el.width).to.eql(100);
+        expect(el.height).to.eql(110);
     });
 
-    it('should render monochrome by default', () => {
-        var render = createRenderer();
-        var monochroneSpy = spyOn(canvasRenderer.Class.prototype, 'renderMonochrome');
+    it("renders monochrome by default", () => {
+        const render = createRenderer();
+        const monochroneSpy = spy(canvasRenderer.Class.prototype, "renderMonochrome");
 
         render(createTestImage());
 
-        expect(monochroneSpy).toHaveBeenCalled();
+        expect(monochroneSpy.called).to.be.ok;
     });
 
-    it('should preserve colors if enabled', () => {
-        var render = createRenderer();
-        var colorfulSpy = spyOn(canvasRenderer.Class.prototype, 'renderColorful');
-        var image = createTestImage();
+    it("preserves colors if enabled", () => {
+        const render = createRenderer();
+        const colorfulSpy = spy(canvasRenderer.Class.prototype, "renderColorful");
+        const image = createTestImage();
         image.colorful = true;
 
         render(image);
 
-        expect(colorfulSpy).toHaveBeenCalled();
+        expect(colorfulSpy.called).to.be.ok;
     });
 
     function createRenderer(options) {
@@ -48,7 +50,7 @@ describe('CanvasRenderer', () => {
     }
 
     function createTestImage() {
-        var image = new Image(2, 1);
+        const image = new Image(2, 1);
 
         image.data[0] = new RGBI(0, 0, 0, 255);
         image.data[1] = new RGBI(255, 255, 255, 0);

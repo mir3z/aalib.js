@@ -1,11 +1,14 @@
-var ImageDataReader = require('readers/ImageDataReader');
+import { expect } from "chai";
 
-describe('ImageDataReader', () => {
+import ImageDataReader from "../../../src/readers/ImageDataReader";
 
-    it('should allow to construct a stream from image data', (done) => {
-        var idata = {data: new Uint8Array([1,2,3,4]), width: 1, height: 1};
+describe("readers/ImageDataReader", () => {
+
+    it("should allow to construct a stream from image data", done => {
+        const idata = { data: new Uint8Array([1, 2, 3, 4]), width: 1, height: 1 };
+
         ImageDataReader.fromImageData(idata)
-            .pipe((image) => {
+            .pipe(image => {
                 expectTestImage(image);
                 done();
             })
@@ -13,6 +16,6 @@ describe('ImageDataReader', () => {
     });
 
     function expectTestImage(image) {
-        expect(image.data[0]).toMatchRGB(1, 2, 3);
+        expect(image.data[0]).to.eql({ r: 1, g: 2, b: 3 });
     }
 });

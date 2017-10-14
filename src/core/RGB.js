@@ -1,4 +1,4 @@
-class RGB {
+export default class RGB {
 
     constructor(r, g, b) {
         this.r = r || 0;
@@ -58,5 +58,3 @@ class RGB {
 function clampVal(v) {
     return Math.min(Math.max(v, 0), 255);
 }
-
-module.exports = RGB;

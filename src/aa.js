@@ -1,23 +1,29 @@
-var RGB = require('./core/RGB');
-var RGBI = require('./core/RGBI');
-var Image = require('./core/Image');
-var utils = require('./utils');
+import RGB from "./core/RGB";
+import RGBI from "./core/RGBI";
+import Image from "./core/Image";
+import { mapRange } from "./utils";
 
-var color = {};
+let color = {};
+
+export default function factory(options) {
+    return function (image) {
+        return aa(image, options);
+    };
+}
 
 function aa(image, options) {
-    var { width, height, colorful } = options;
+    const { width, height, colorful } = options;
 
-    var bw = image.width / width;
-    var bh = image.height / height;
+    const bw = image.width / width;
+    const bh = image.height / height;
 
-    var imin = 255;
-    var imax = 0;
+    let imin = 255;
+    let imax = 0;
 
-    var aaImage = new Image(width, height);
+    const aaImage = new Image(width, height);
 
-    for (var i = 0; i < height; i++) {
-        for (var j = 0; j < width; j++) {
+    for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
 
             color = analyzeBlock(
                 image,
@@ -46,12 +52,12 @@ function aa(image, options) {
 }
 
 function analyzeBlock(image, x, y, width, height) {
-    var count = 0;
-    var avgColor = new RGB();
-    var color;
+    const avgColor = new RGB();
+    let count = 0;
+    let color;
 
-    for (var row = 0; row < height; row++) {
-        for (var col = 0; col < width; col++) {
+    for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width; col++) {
             color = image.getAt(x + col, y + row);
             avgColor.addc(color);
             count++;
@@ -70,14 +76,6 @@ function analyzeBlock(image, x, y, width, height) {
 
 function normalizeIntensity(img, a, b) {
     img.filter((color) => {
-        color.intensity = ~~utils.mapRange(color.intensity, a, b, 0, 255);
+        color.intensity = ~~mapRange(color.intensity, a, b, 0, 255);
     });
 }
-
-function factory(options) {
-    return function (image) {
-        return aa(image, options);
-    };
-}
-
-module.exports = factory;

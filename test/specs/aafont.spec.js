@@ -1,17 +1,15 @@
-var aafont = require('aafont');
+import { expect } from "chai";
 
-describe('aafont', () => {
-    it('should calculate and normalize given characters brightness', () => {
-        var charset = ['.', '*', '#'];
+import aafont from "../../src/aafont";
 
-        var fontTable = aafont(charset);
+describe("aafont", () => {
+    it("calculates and normalizes character brightness", () => {
+        const charset = [".", "*", "#"];
 
-        expect(fontTable).toEqual(jasmine.any(Array));
-        expect(fontTable[0][0]).toBe('#');
-        expect(fontTable[0][1]).toBe(0);
-        expect(fontTable[1][0]).toBe('*');
-        expect(fontTable[1][1] < 180 && fontTable[1][1] > 150).toBeTruthy();
-        expect(fontTable[2][0]).toBe('.');
-        expect(fontTable[2][1]).toBe(255);
+        expect(aafont(charset)).to.eql([
+            ["#", 0],
+            ["*", 171],
+            [".", 255]
+        ]);
     });
 });

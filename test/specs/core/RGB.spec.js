@@ -1,73 +1,80 @@
-var RGB = require('core/RGB');
+import { expect } from "chai";
 
-describe('RGB object', () => {
+import RGB from "../../../src/core/RGB";
 
-    it('should set default values', () => {
-        var rgb = new RGB();
+describe("core/RGB", () => {
 
-        expect(rgb).toMatchRGB(0, 0, 0);
+    it("sets default values", () => {
+        const rgb = new RGB();
+
+        expectRGB(rgb, 0, 0, 0);
     });
 
-    it('should set provided values', () => {
-        var rgb = new RGB(10, 20, 40);
+    it("sets provided values", () => {
+        const rgb = new RGB(10, 20, 40);
 
-        expect(rgb).toMatchRGB(10, 20, 40);
+        expectRGB(rgb, 10, 20, 40);
     });
 
-    it('should multiply by value', () => {
-        var rgb = new RGB(10, 20, 40);
+    it("multiplies by value", () => {
+        const rgb = new RGB(10, 20, 40);
 
         rgb.mul(10);
 
-        expect(rgb).toMatchRGB(100, 200, 400);
+        expectRGB(rgb, 100, 200, 400);
     });
 
-    it('should add value', () => {
-        var rgb = new RGB(100, 200, 0);
+    it("adds value", () => {
+        const rgb = new RGB(100, 200, 0);
 
         rgb.add(100);
 
-        expect(rgb).toMatchRGB(200, 300, 100);
+        expectRGB(rgb, 200, 300, 100);
     });
 
-    it('should add color', () => {
-        var rgb = new RGB(100, 200, 0);
+    it("adds color", () => {
+        const rgb = new RGB(100, 200, 0);
 
         rgb.addc(new RGB(100, 50, 10));
 
-        expect(rgb).toMatchRGB(200, 250, 10);
+        expectRGB(rgb, 200, 250, 10);
     });
 
-    it('should divide by value', () => {
-        var rgb = new RGB(100, 200, 0);
+    it("divides by value", () => {
+        const rgb = new RGB(100, 200, 0);
 
         rgb.div(10);
 
-        expect(rgb).toMatchRGB(10, 20, 0);
+        expectRGB(rgb, 10, 20, 0);
     });
 
-    it('should invert color', () => {
-        var rgb = new RGB(0, 200, 255);
+    it("inverts color", () => {
+        const rgb = new RGB(0, 200, 255);
 
         rgb.inverse();
 
-        expect(rgb).toMatchRGB(255, 55, 0);
+        expectRGB(rgb, 255, 55, 0);
     });
 
-    it('should calculate grayscale value', () => {
-        var rgb = new RGB(0, 200, 100);
+    it("calculates grayscale value", () => {
+        const rgb = new RGB(0, 200, 100);
 
-        var gray = rgb.getGrayscale();
+        const gray = rgb.getGrayscale();
 
-        expect(gray).toBe(100);
+        expect(gray).to.eql(100);
     });
 
-    it('should clamp color components', () => {
-        var rgb = new RGB(-100, 255, 500);
+    it("clamps color components", () => {
+        const rgb = new RGB(-100, 255, 500);
 
         rgb.clamp();
 
-        expect(rgb).toMatchRGB(0, 255, 255);
+        expectRGB(rgb, 0, 255, 255);
     });
 
+    function expectRGB(subject, r, g, b) {
+        expect(subject.r).to.eql(r);
+        expect(subject.g).to.eql(g);
+        expect(subject.b).to.eql(b);
+    }
 });

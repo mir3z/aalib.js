@@ -1,14 +1,18 @@
-var inverse = require('filters/inverse');
-var utils = require('utils');
+import { expect } from "chai";
+import { createTestImage } from "../../utils";
 
-describe('Inverse filter', () => {
-    it('should invert image', () => {
-        var inverseFilter = inverse();
+import inverse from "../../../src/filters/inverse";
 
-        var inverted = inverseFilter(utils.createTestImage());
+describe("filters/inverse", () => {
+    it("inverts image", () => {
+        const inverseFilter = inverse();
 
-        expect(inverted.data[0]).toMatchRGB(0, 255, 255);
-        expect(inverted.data[1]).toMatchRGB(255, 0, 255);
-        expect(inverted.data[2]).toMatchRGB(255, 255, 0);
+        const inverted = inverseFilter(createTestImage());
+
+        expect(inverted.data).to.eql([
+            { r: 0,   g: 255, b: 255 },
+            { r: 255, g: 0,   b: 255 },
+            { r: 255, g: 255, b: 0 }
+        ]);
     });
 });

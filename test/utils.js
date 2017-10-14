@@ -1,16 +1,12 @@
-var Image = require('core/Image');
-var rgbBase64Image = require('resources/rgb.base64');
+import Image from "../src/core/Image";
+import rgbBase64Image from "./resources/rgb.base64";
 
-var utils = {
-    createTestHTMLImage() {
-        var img = document.createElement('img');
-        img.src = rgbBase64Image;
-        return img;
-    },
+export function createTestImage() {
+    return Image.fromHTMLImageElement(createTestHTMLImage());
+}
 
-    createTestImage() {
-        return Image.fromHTMLImageElement(utils.createTestHTMLImage());
-    }
-};
-
-module.exports = utils;
+export function createTestHTMLImage() {
+    const img = document.createElement("img");
+    img.src = rgbBase64Image;
+    return img;
+}

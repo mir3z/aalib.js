@@ -1,11 +1,11 @@
-var Reader = require('./Reader');
-var Image = require('../core/Image');
+import Reader from "./Reader";
+import Image from "../core/Image";
 
-class ImageReader extends Reader {
+export default class ImageReader extends Reader {
 
     constructor() {
         super();
-        this.src = '';
+        this.src = "";
         this.img = null;
     }
 
@@ -14,7 +14,7 @@ class ImageReader extends Reader {
     }
 
     createImageElement() {
-        this.setImage(document.createElement('img'));
+        this.setImage(document.createElement("img"));
     }
 
     setImage(img) {
@@ -22,20 +22,20 @@ class ImageReader extends Reader {
     }
 
     onRead(stream, error) {
-        var onLoad = () => {
-            this.img.removeEventListener('load', onLoad);
-            this.img.removeEventListener('error', onError);
+        const onLoad = () => {
+            this.img.removeEventListener("load", onLoad);
+            this.img.removeEventListener("error", onError);
             stream(Image.fromHTMLImageElement(this.img));
         };
 
-        var onError = () => {
-            this.img.removeEventListener('load', onLoad);
-            this.img.removeEventListener('error', onError);
-            error('ImageReader: Error loading image');
+        const onError = () => {
+            this.img.removeEventListener("load", onLoad);
+            this.img.removeEventListener("error", onError);
+            error("ImageReader: Error loading image");
         };
 
-        this.img.addEventListener('load', onLoad);
-        this.img.addEventListener('error', onError);
+        this.img.addEventListener("load", onLoad);
+        this.img.addEventListener("error", onError);
 
         if (this.img.complete && this.img.naturalWidth) {
             onLoad();
@@ -45,17 +45,15 @@ class ImageReader extends Reader {
     }
 
     static fromURL(url) {
-        var reader = new ImageReader();
+        const reader = new ImageReader();
         reader.setSrc(url);
         reader.createImageElement();
         return reader.read();
     }
 
     static fromImg(image) {
-        var reader = new ImageReader();
+        const reader = new ImageReader();
         reader.setImage(image);
         return reader.read();
     }
 }
-
-module.exports = ImageReader;

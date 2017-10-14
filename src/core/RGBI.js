@@ -1,6 +1,6 @@
-var RGB = require('./RGB');
+import RGB from "./RGB";
 
-class RGBI extends RGB {
+export default class RGBI extends RGB {
 
     constructor(r, g, b, i) {
         super(r, g, b);
@@ -35,5 +35,3 @@ class RGBI extends RGB {
         return this;
     }
 }
-
-module.exports = RGBI;

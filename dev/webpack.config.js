@@ -1,23 +1,15 @@
-var webpack = require('webpack');
-var path = require('path');
+const path = require("path");
 
 module.exports = {
-    entry: path.resolve(__dirname, 'main.js'),
+    entry: path.resolve(__dirname, "main.js"),
     output: {
         path: __dirname,
-        publicPath: path.basename(__dirname) + '/'
-    },
-    resolve: {
-        root: path.resolve(__dirname, '../src')
+        publicPath: path.basename(__dirname) + "/"
     },
     module: {
-        loaders: [
-            {
-                test: /\.js/,
-                exclude: /(node_modules|bower_components)/,
-                loader: 'babel'
-            }
+        rules: [
+            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
         ]
     },
-    devtool: 'source-map'
+    devtool: "#cheap-module-inline-source-map"
 };

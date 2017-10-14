@@ -1,18 +1,24 @@
-var aa = require('aa');
-var utils = require('utils');
+import { expect } from "chai";
 
-describe('aa', () => {
+import aa from "../../src/aa";
+import { createTestImage } from "../utils";
 
-    it('should convert RGB Image to RGBI Image', () => {
-        var testImage = utils.createTestImage();
+describe("aa", () => {
+    it("converts RGB Image to RGBI Image", () => {
+        const testImage = createTestImage();
+        const { width, height } = testImage;
 
-        var out = aa({ width: testImage.width, height: testImage.height })(testImage);
+        const out = aa({ width, height })(testImage);
 
-        expect(out.width).toEqual(testImage.width);
-        expect(out.height).toEqual(testImage.height);
-        expect(out.data.length).toEqual(testImage.data.length);
-        expect(out.data[0]).toMatchRGBI(255, 0, 0, 0);
-        expect(out.data[1]).toMatchRGBI(0, 255, 0, 0);
-        expect(out.data[2]).toMatchRGBI(0, 0, 255, 0);
+        expect(out).to.eql({
+            width,
+            height,
+            data: [
+                { r: 255, g: 0,   b: 0,   intensity: 0 },
+                { r: 0,   g: 255, b: 0,   intensity: 0 },
+                { r: 0,   g: 0,   b: 255, intensity: 0 }
+            ],
+            colorful: undefined
+        });
     });
 });

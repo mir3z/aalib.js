@@ -1,14 +1,18 @@
-var linear = require('filters/linear');
-var utils = require('utils');
+import { expect } from "chai";
+import { createTestImage } from "../../utils";
 
-describe('Linear filter', () => {
-    it('should apply linear transformation', () => {
-        var linearFilter = linear(0.2, -10);
+import linear from "../../../src/filters/linear";
 
-        var image = linearFilter(utils.createTestImage());
+describe("filters/linear", () => {
+    it("applies linear transformation", () => {
+        const linearFilter = linear(0.2, -10);
 
-        expect(image.data[0]).toMatchRGB(41, 0, 0);
-        expect(image.data[1]).toMatchRGB(0, 41, 0);
-        expect(image.data[2]).toMatchRGB(0, 0, 41);
+        const image = linearFilter(createTestImage());
+
+        expect(image.data).to.eql([
+            { r: 41, g: 0,  b: 0 },
+            { r: 0,  g: 41, b: 0 },
+            { r: 0,  g: 0,  b: 41 }
+        ]);
     });
 });

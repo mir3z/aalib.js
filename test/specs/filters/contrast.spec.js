@@ -1,34 +1,42 @@
-var contrast = require('filters/contrast');
-var utils = require('utils');
+import { expect } from "chai";
+import { createTestImage } from "../../utils";
 
-describe('Contrast filter', () => {
-    it('should decrease contrast accordingly when value from [0, 1) is given', () => {
-        var contrastFilter = contrast(0.2);
+import contrast from "../../../src/filters/contrast";
 
-        var image = contrastFilter(utils.createTestImage());
+describe("filters/contrast", () => {
+    it("decreases contrast if value from [0, 1) is given", () => {
+        const contrastFilter = contrast(0.2);
 
-        expect(image.data[0]).toMatchRGB(51, 0, 0);
-        expect(image.data[1]).toMatchRGB(0, 51, 0);
-        expect(image.data[2]).toMatchRGB(0, 0, 51);
+        const image = contrastFilter(createTestImage());
+
+        expect(image.data).to.eql([
+            { r: 51, g: 0,  b: 0 },
+            { r: 0,  g: 51, b: 0 },
+            { r: 0,  g: 0,  b: 51 }
+        ]);
     });
 
-    it('should increase contrast when value > 1 is given', () => {
-        var contrastFilter = contrast(100);
+    it("increases contrast if value > 1 is given", () => {
+        const contrastFilter = contrast(100);
 
-        var image = contrastFilter(utils.createTestImage());
+        const image = contrastFilter(createTestImage());
 
-        expect(image.data[0]).toMatchRGB(255, 0, 0);
-        expect(image.data[1]).toMatchRGB(0, 255, 0);
-        expect(image.data[2]).toMatchRGB(0, 0, 255);
+        expect(image.data).to.eql([
+            { r: 255, g: 0,   b: 0 },
+            { r: 0,   g: 255, b: 0 },
+            { r: 0,   g: 0,   b: 255 }
+        ]);
     });
 
-    it('should not change contrast when no value is given', () => {
-        var contrastFilter = contrast();
+    it("does not change contrast if no value is given", () => {
+        const contrastFilter = contrast();
 
-        var image = contrastFilter(utils.createTestImage());
+        const image = contrastFilter(createTestImage());
 
-        expect(image.data[0]).toMatchRGB(255, 0, 0);
-        expect(image.data[1]).toMatchRGB(0, 255, 0);
-        expect(image.data[2]).toMatchRGB(0, 0, 255);
+        expect(image.data).to.eql([
+            { r: 255, g: 0,   b: 0 },
+            { r: 0,   g: 255, b: 0 },
+            { r: 0,   g: 0,   b: 255 }
+        ]);
     });
 });

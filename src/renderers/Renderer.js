@@ -1,18 +1,15 @@
-var defaults = require('lodash/object/defaults');
-var range = require('lodash/utility/range');
-var map = require('lodash/collection/map');
+import { range } from "../utils";
+import aafont from "../aafont";
 
-var aafont = require('../aafont');
+const ASCII_CHARSET = range(32, 126).map(code => String.fromCharCode(code));
+const SIMPLE_CHARSET = [".", ":", "*", "I", "$", "V", "F", "N", "M"];
 
-var ASCII_CHARSET = map(range(32, 127), (code) => String.fromCharCode(code));
-var SIMPLE_CHARSET = ['.', ':', '*', 'I', '$', 'V', 'F', 'N', 'M'];
-
-class Renderer {
+export default class Renderer {
     constructor(options) {
-        this.options = defaults(options || {}, {
+        this.options = Object.assign({}, {
             charset: ASCII_CHARSET,
-            fontFamily: 'monospace'
-        });
+            fontFamily: "monospace"
+        }, options);
 
         this.fontmap = Renderer.buildFont(this.options.charset, {
             fontFamily: this.options.fontFamily
@@ -26,8 +23,7 @@ class Renderer {
     }
 
     processImage(image) {
-
-        for (var i = 0; i < image.data.length; i++) {
+        for (let i = 0; i < image.data.length; i++) {
             image.data[i].char = this.matchChar(image.data[i].intensity);
         }
 
@@ -35,14 +31,14 @@ class Renderer {
     }
 
     matchChar(val) {
-        var matched = this.fontmap[0];
+        let matched = this.fontmap[0];
 
         if (matched[0] === val) {
             return matched[0];
         }
 
-        for (var i = 0; i < this.fontmap.length; i++) {
-            var tuple = this.fontmap[i];
+        for (let i = 0; i < this.fontmap.length; i++) {
+            const tuple = this.fontmap[i];
 
             if (Math.abs(val - tuple[1]) < Math.abs(val - matched[1])) {
                 matched = tuple;
@@ -66,5 +62,3 @@ Renderer.CHARSET = {
     ASCII: ASCII_CHARSET,
     SIMPLE: SIMPLE_CHARSET
 };
-
-module.exports = Renderer;

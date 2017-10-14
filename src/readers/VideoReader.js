@@ -1,17 +1,14 @@
-var Reader = require('./Reader');
-var Image = require('../core/Image');
-var defaults = require('lodash/object/defaults');
+import Reader from "./Reader";
+import Image from "../core/Image";
 
-class VideoReader extends Reader {
+export default class VideoReader extends Reader {
 
     constructor(options) {
         super();
 
-        this.options = defaults(options || {}, {
-            autoplay: false
-        });
+        this.options = Object.assign({}, { autoplay: false }, options);
 
-        this.src = '';
+        this.src = "";
         this.video = null;
         this.capturer = new VideoCapturer();
 
@@ -26,7 +23,7 @@ class VideoReader extends Reader {
     }
 
     createVideoElement() {
-        this.setVideo(document.createElement('video'));
+        this.setVideo(document.createElement("video"));
     }
 
     setVideo(video) {
@@ -38,12 +35,12 @@ class VideoReader extends Reader {
     }
 
     onRead(stream, error) {
-        this.video.addEventListener('error', () => {
-            this.video.removeEventListener('play', this.loop);
-            error('Can\'t play video: ' + this.video.src);
+        this.video.addEventListener("error", () => {
+            this.video.removeEventListener("play", this.loop);
+            error("Can\"t play video: " + this.video.src);
         });
 
-        this.video.addEventListener('play', this.loop);
+        this.video.addEventListener("play", this.loop);
     }
 
     loop() {
@@ -59,29 +56,29 @@ class VideoReader extends Reader {
     }
 
     static fromURL(url, options) {
-        var reader = new VideoReader(options);
+        const reader = new VideoReader(options);
         reader.createVideoElement();
         reader.setSrc(url);
         return reader.read();
     }
 
     static fromVideoElement(video, options) {
-        var reader = new VideoReader(options);
+        const reader = new VideoReader(options);
         reader.setVideo(video);
         return reader.read();
     }
 }
 
-class VideoCapturer {
+export class VideoCapturer {
 
     constructor() {
-        this.canvas = document.createElement('canvas');
-        this.ctx = this.canvas.getContext('2d');
+        this.canvas = document.createElement("canvas");
+        this.ctx = this.canvas.getContext("2d");
     }
 
     captureFrame(video) {
-        var w = video.videoWidth;
-        var h = video.videoHeight;
+        const w = video.videoWidth;
+        const h = video.videoHeight;
 
         this.canvas.width = w;
         this.canvas.height = h;
@@ -91,5 +88,3 @@ class VideoCapturer {
         return this.ctx.getImageData(0, 0, w, h);
     }
 }
-
-module.exports = VideoReader;

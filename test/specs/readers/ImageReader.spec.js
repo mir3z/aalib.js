@@ -1,35 +1,37 @@
-var ImageReader = require('readers/ImageReader');
-var Stream = require('readers/Stream');
-var rgbBase64Image = require('resources/rgb.base64');
+import { expect } from "chai";
 
-describe('ImageReader', () => {
+import ImageReader from "../../../src/readers/ImageReader";
+import Stream from "../../../src/readers/Stream";
+import rgbBase64Image from "../../resources/rgb.base64";
 
-    it('should allow to construct a stream directly from URL', () => {
-        var stream = ImageReader.fromURL(rgbBase64Image);
+describe("readers/ImageReader", () => {
 
-        expect(stream).toEqual(jasmine.any(Stream));
+    it("allows to construct a stream directly from URL", () => {
+        const stream = ImageReader.fromURL(rgbBase64Image);
+
+        expect(stream).to.be.instanceOf(Stream);
     });
 
-    it('should allow to read image directly from URL', (done) => {
+    it("allows to read image directly from URL", done => {
         ImageReader
             .fromURL(rgbBase64Image)
-            .pipe((image) => {
+            .pipe(image => {
                 expectTestImage(image);
                 done();
             })
             .end();
     });
 
-    it('should allow to construct a stream directly from HTMLImageElement', () => {
-        var stream = ImageReader.fromImg(createTestHTMLImage());
+    it("allows to construct a stream directly from HTMLImageElement", () => {
+        const stream = ImageReader.fromImg(createTestHTMLImage());
 
-        expect(stream).toEqual(jasmine.any(Stream));
+        expect(stream).to.be.instanceOf(Stream);
     });
 
-    it('should allow to read image directly from HTMLImageElement', (done) => {
+    it("allows to read image directly from HTMLImageElement", done => {
         ImageReader
             .fromImg(createTestHTMLImage())
-            .pipe((image) => {
+            .pipe(image => {
                 expectTestImage(image);
                 done();
             })
@@ -37,14 +39,16 @@ describe('ImageReader', () => {
     });
 
     function createTestHTMLImage() {
-        var img = new Image();
+        const img = new Image();
         img.src = rgbBase64Image;
         return img;
     }
 
     function expectTestImage(image) {
-        expect(image.data[0]).toMatchRGB(255, 0, 0);
-        expect(image.data[1]).toMatchRGB(0, 255, 0);
-        expect(image.data[2]).toMatchRGB(0, 0, 255);
+        expect(image.data).to.eql([
+            { r: 255, g: 0, b: 0 },
+            { r: 0, g: 255, b: 0 },
+            { r: 0, g: 0, b: 255 }
+        ]);
     }
 });

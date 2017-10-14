@@ -1,56 +1,59 @@
-var Stream = require('readers/Stream');
+import { spy } from "sinon";
+import { expect } from "chai";
 
-describe('Stream', () => {
-    var stream;
+import Stream from "../../../src/readers/Stream";
 
-    beforeEach(() => {
-        stream = new Stream();
+describe("readers/Stream", () => {
+    it("sets initial state", () => {
+        const stream = new Stream();
+        expect(stream.ready).to.be.false;
+        expect(stream.sink.length).to.eql(0);
+        expect(stream.data).to.eql(null);
     });
 
-    it('should set initial state', () => {
-        expect(stream.ready).toBeFalsy();
-        expect(stream.sink.length).toBe(0);
-        expect(stream.data).toBeNull();
+    it("does not start processing until end method is called", () => {
+        const handler = spy();
+        const stream = new Stream();
+
+        stream.write("something").pipe(handler);
+
+        expect(handler.called).not.to.be.ok;
     });
 
-    it('should not start processing until end method is called', () => {
-        var handler = jasmine.createSpy();
-
-        stream.write('something').pipe(handler);
-
-        expect(handler).not.toHaveBeenCalled();
-    });
-
-    it('should not process data when there is no data written', () => {
-        var handler = jasmine.createSpy();
+    it("does not process data when there is no data written", () => {
+        const handler = spy();
+        const stream = new Stream();
 
         stream.pipe(handler).end();
 
-        expect(handler).not.toHaveBeenCalled();
+        expect(handler.called).not.to.be.ok;
     });
 
-    it('should start processing after end method is called', () => {
-        var handler = jasmine.createSpy();
-        var data = 'this is data';
+    it("starts processing after end method is called", () => {
+        const handler = spy();
+        const stream = new Stream();
+        const data = "this is data";
 
         stream.write(data).pipe(handler).end();
 
-        expect(handler).toHaveBeenCalledWith(data);
+        expect(handler.calledWith(data)).to.be.ok;
     });
 
-    it('should process data when it is written after end method was called', () => {
-        var handler = jasmine.createSpy();
-        var data = 100;
+    it("process data when it is written after end method was called", () => {
+        const handler = spy();
+        const stream = new Stream();
+        const data = 100;
         stream.pipe(handler).end();
 
         stream.write(data);
 
-        expect(handler).toHaveBeenCalledWith(data);
+        expect(handler.calledWith(data)).to.be.ok;
     });
 
-    it('should allow to add handlers', () => {
-        var handler1 = jasmine.createSpy(),
-            handler2 = jasmine.createSpy();
+    it("allows to add handlers", () => {
+        const handler1 = spy();
+        const handler2 = spy();
+        const stream = new Stream();
 
         stream
             .write({ foo: 10 })
@@ -58,28 +61,33 @@ describe('Stream', () => {
             .pipe(handler2)
             .end();
 
-        expect(handler1).toHaveBeenCalled();
-        expect(handler2).toHaveBeenCalled();
+        expect(handler1.called).to.be.ok;
+        expect(handler2.called).to.be.ok;
     });
 
-    it('should allow to transform data', () => {
+    it("allows to transform data", () => {
+        const stream = new Stream();
+
         stream
             .write({ foo: 10 })
             .pipe((o) => { o.foo *= 2; return o; })
             .pipe((o) => { o.foo += 5; return o; })
             .end();
 
-        expect(stream.data.foo).toBe(25);
+        expect(stream.data.foo).to.eql(25);
     });
 
-    it('should handle continuous data flow', () => {
-        var handler = jasmine.createSpy();
+    it("handles continuous data flow", () => {
+        const handler = spy();
+        const stream = new Stream();
+        const writeCount = 3;
+
         stream.pipe(handler).end();
 
-        for (var i = 0; i < 3; i++) {
+        for (let i = 0; i < writeCount; i++) {
             stream.write(i);
         }
 
-        expect(handler.calls.count()).toBe(3);
+        expect(handler.getCalls()).to.have.lengthOf(writeCount);
     });
 });

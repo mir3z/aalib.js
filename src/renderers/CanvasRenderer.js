@@ -1,25 +1,24 @@
-var defaults = require('lodash/object/defaults');
-var Renderer = require('./Renderer');
+import Renderer from "../../src/renderers/Renderer";
 
 class CanvasRenderer extends Renderer {
 
     constructor(options) {
-        super(defaults(options || {}, {
+        super(Object.assign({}, {
             fontSize: 7,
             lineHeight: 7,
             width: 400,
             height: 300
-        }));
+        }, options));
 
-        this.el = this.options.el || document.createElement('canvas');
+        this.el = this.options.el || document.createElement("canvas");
         this.el.width = this.options.width;
         this.el.height = this.options.height;
 
-        this.ctx = this.el.getContext('2d');
-        this.ctx.fillStyle = '#000';
-        this.ctx.textBaseline = 'top';
-        this.ctx.textAlign = 'start';
-        this.ctx.font = this.options.fontSize + 'px ' + this.options.fontFamily;
+        this.ctx = this.el.getContext("2d");
+        this.ctx.fillStyle = "#000";
+        this.ctx.textBaseline = "top";
+        this.ctx.textAlign = "start";
+        this.ctx.font = this.options.fontSize + "px " + this.options.fontFamily;
     }
 
     render(image) {
@@ -35,11 +34,14 @@ class CanvasRenderer extends Renderer {
     }
 
     renderColorful(image) {
-        var lineHeight = this.options.lineHeight;
-        var x, y, color;
+        const lineHeight = this.options.lineHeight;
+        let x;
+        let y;
+        let color;
+
         this.clearCanvas();
 
-        for (var i = 0; i < image.data.length; i++) {
+        for (let i = 0; i < image.data.length; i++) {
             x = i % image.width;
             y = ~~(i / image.width);
             color = image.data[i];
@@ -50,16 +52,18 @@ class CanvasRenderer extends Renderer {
     }
 
     renderMonochrome(image) {
-        var lineHeight = this.options.lineHeight;
-        var y, line;
+        const lineHeight = this.options.lineHeight;
+        let y;
+        let line;
+
         this.clearCanvas();
 
-        for (var i = 0; i < image.data.length; i += image.width) {
+        for (let i = 0; i < image.data.length; i += image.width) {
             y = ~~(i / image.width);
             line = image.data
                 .slice(i, i + image.width)
                 .map((data) => data.char)
-                .join('');
+                .join("");
             this.ctx.fillText(line, 0, y * lineHeight);
         }
     }
@@ -69,15 +73,11 @@ class CanvasRenderer extends Renderer {
     }
 }
 
-function factory(options) {
-    var renderer = new CanvasRenderer(options);
+export default function factory(options) {
+    const renderer = new CanvasRenderer(options);
 
-    return function (data) {
-        return renderer.render(data);
-    };
+    return (data) => renderer.render(data);
 }
 
 factory.CHARSET = Renderer.CHARSET;
 factory.Class = CanvasRenderer;
-
-module.exports = factory;

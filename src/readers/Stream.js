@@ -1,4 +1,4 @@
-class Stream {
+export default class Stream {
 
     constructor() {
         this.clear();
@@ -49,5 +49,3 @@ class Stream {
         return this;
     }
 }
-
-module.exports = Stream;

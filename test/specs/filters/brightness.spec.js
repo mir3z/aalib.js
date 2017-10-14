@@ -1,34 +1,42 @@
-var brightness = require('filters/brightness');
-var utils = require('utils');
+import { expect } from "chai";
+import { createTestImage } from "../../utils";
 
-describe('Brightness filter', () => {
-    it('should decrease brightness when negative value is given', () => {
-        var brightnessFilter = brightness(-10);
+import brightness from "../../../src/filters/brightness";
 
-        var image = brightnessFilter(utils.createTestImage());
+describe("filters/brightness", () => {
+    it("decreases brightness when negative value is given", () => {
+        const brightnessFilter = brightness(-10);
 
-        expect(image.data[0]).toMatchRGB(245, 0, 0);
-        expect(image.data[1]).toMatchRGB(0, 245, 0);
-        expect(image.data[2]).toMatchRGB(0, 0, 245);
+        const image = brightnessFilter(createTestImage());
+
+        expect(image.data).to.eql([
+            { r: 245, g: 0,   b: 0 },
+            { r: 0,   g: 245, b: 0 },
+            { r: 0,   g: 0,   b: 245 }
+        ]);
     });
 
-    it('should increase brightness when positive value is given', () => {
-        var brightnessFilter = brightness(10);
+    it("increases brightness when positive value is given", () => {
+        const brightnessFilter = brightness(10);
 
-        var image = brightnessFilter(utils.createTestImage());
+        const image = brightnessFilter(createTestImage());
 
-        expect(image.data[0]).toMatchRGB(255, 10, 10);
-        expect(image.data[1]).toMatchRGB(10, 255, 10);
-        expect(image.data[2]).toMatchRGB(10, 10, 255);
+        expect(image.data).to.eql([
+            { r: 255, g: 10,  b: 10 },
+            { r: 10,  g: 255, b: 10 },
+            { r: 10,  g: 10,  b: 255 }
+        ]);
     });
 
-    it('should not change brightness when no value is given', () => {
-        var brightnessFilter = brightness();
+    it("does not change brightness when no value is given", () => {
+        const brightnessFilter = brightness();
 
-        var image = brightnessFilter(utils.createTestImage());
+        const image = brightnessFilter(createTestImage());
 
-        expect(image.data[0]).toMatchRGB(255, 0, 0);
-        expect(image.data[1]).toMatchRGB(0, 255, 0);
-        expect(image.data[2]).toMatchRGB(0, 0, 255);
+        expect(image.data).to.eql([
+            { r: 255, g: 0,   b: 0 },
+            { r: 0,   g: 255, b: 0 },
+            { r: 0,   g: 0,   b: 255 }
+        ]);
     });
 });
