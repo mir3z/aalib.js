@@ -1,9 +1,9 @@
 export default function factory() {
-    return function (image) {
-        return inverse(image);
-    };
+    return image => inverse(image);
 }
 
 export function inverse(image) {
-    return image.filter((color) => color.inverse().clamp());
+    return image.process((color, processor) => {
+        processor.inverse(color).clamp(color);
+    });
 }

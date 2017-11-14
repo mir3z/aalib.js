@@ -7,9 +7,9 @@ describe("aafont", () => {
         const charset = [".", "*", "#"];
 
         expect(aafont(charset)).to.eql([
-            ["#", 0],
-            ["*", 171],
-            [".", 255]
+            { char: "#", brightness: 0 },
+            { char: "*", brightness: 173 },
+            { char: ".", brightness: 255 }
         ]);
     });
 });

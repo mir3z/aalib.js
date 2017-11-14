@@ -25,3 +25,11 @@ export function trunc(val) {
 export function range(start, end) {
     return Array.from(new Array(end - start + 1).keys()).map(i => i + start);
 }
+export function clampByte(v) {
+    if (v > 255) {
+        return 255;
+    } else if (v < 0) {
+        return 0;
+    }
+    return v;
+}

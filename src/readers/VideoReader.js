@@ -1,90 +1,60 @@
-import Reader from "./Reader";
-import Image from "../core/Image";
+import AbstractReader from "./AbstractReader";
+import AAImage from "../core/AAImage";
 
-export default class VideoReader extends Reader {
-
-    constructor(options) {
+export default class VideoReader extends AbstractReader {
+    constructor(video, captureFrame, options) {
         super();
 
-        this.options = Object.assign({}, { autoplay: false }, options);
-
-        this.src = "";
-        this.video = null;
-        this.capturer = new VideoCapturer();
-
-        this.loop = this.loop.bind(this);
-    }
-
-    setSrc(src) {
-        this.src = src;
-        if (this.video) {
-            this.video.src = this.src;
-        }
-    }
-
-    createVideoElement() {
-        this.setVideo(document.createElement("video"));
-    }
-
-    setVideo(video) {
         this.video = video;
+        this.options = Object.assign({}, { autoplay: false }, options);
+        this.video.autoplay = this.options.autoplay;
 
-        if (this.options.autoplay) {
-            this.video.autoplay = true;
-        }
+        this.captureFrame = captureFrame;
     }
 
-    onRead(stream, error) {
-        this.video.addEventListener("error", () => {
-            this.video.removeEventListener("play", this.loop);
-            error("Can\"t play video: " + this.video.src);
-        });
+    onRead(observer) {
+        const video = this.video;
 
-        this.video.addEventListener("play", this.loop);
-    }
+        const playbackLoop = () => {
+            if (video.paused || video.ended) {
+                return;
+            }
 
-    loop() {
-        if (this.video.paused || this.video.ended) {
-            return;
-        }
+            observer.next(AAImage.fromImageData(this.captureFrame(video)));
 
-        this.stream.write(
-            Image.fromImageData(this.capturer.captureFrame(this.video))
-        );
+            requestAnimationFrame(playbackLoop);
+        };
 
-        setTimeout(this.loop, 0);
-    }
+        const onError = () => {
+            const { src, error: { code, message } } = video;
 
-    static fromURL(url, options) {
-        const reader = new VideoReader(options);
-        reader.createVideoElement();
-        reader.setSrc(url);
-        return reader.read();
+            video.removeEventListener("play", playbackLoop);
+            observer.error(`Error occurred while trying to play ${ src }: : ${ code }, ${ message }`);
+        };
+
+        video.addEventListener("error", onError);
+        video.addEventListener("play", playbackLoop);
     }
 
     static fromVideoElement(video, options) {
-        const reader = new VideoReader(options);
-        reader.setVideo(video);
+        const reader = new VideoReader(video, createVideoCapture(), options);
         return reader.read();
     }
 }
 
-export class VideoCapturer {
+function createVideoCapture() {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
-    constructor() {
-        this.canvas = document.createElement("canvas");
-        this.ctx = this.canvas.getContext("2d");
-    }
-
-    captureFrame(video) {
+    return function capture(video) {
         const w = video.videoWidth;
         const h = video.videoHeight;
 
-        this.canvas.width = w;
-        this.canvas.height = h;
+        canvas.width = w;
+        canvas.height = h;
 
-        this.ctx.drawImage(video, 0, 0, w, h);
+        ctx.drawImage(video, 0, 0, w, h);
 
-        return this.ctx.getImageData(0, 0, w, h);
-    }
+        return ctx.getImageData(0, 0, w, h);
+    };
 }

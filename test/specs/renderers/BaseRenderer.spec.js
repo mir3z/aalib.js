@@ -1,13 +1,12 @@
 import { expect } from "chai";
 
-import Renderer from "../../../src/renderers/Renderer";
-import Image from "../../../src/core/Image";
-import RGBI from "../../../src/core/RGBI";
+import BaseRenderer, { SIMPLE_CHARSET } from "../../../src/renderers/BaseRenderer";
+import AAImage from "../../../src/core/AAImage";
 
 
-describe("renderers/renderer", () => {
+describe("renderers/BaseRenderer", () => {
 
-    it("matches character to given brightness level", () => {
+    it("matches character with given brightness level", () => {
         const renderer = createRenderer();
 
         expect(renderer.matchChar(255)).to.eql(".");
@@ -23,17 +22,16 @@ describe("renderers/renderer", () => {
     });
 
     function createRenderer() {
-        return new Renderer({
-            charset: Renderer.CHARSET.SIMPLE
+        return new BaseRenderer({
+            charset: SIMPLE_CHARSET
         });
     }
 
     function createTestImage() {
-        const image = new Image(2, 1);
-
-        image.data[0] = new RGBI(0, 0, 0, 255);
-        image.data[1] = new RGBI(255, 255, 255, 0);
-
-        return image;
+        const data = [
+            { r: 0, g: 0, b: 0, mono: 255 },
+            { r: 255, g: 255, b: 255, mono: 0 }
+        ];
+        return new AAImage({ width: 2, height: 1, data });
     }
 });

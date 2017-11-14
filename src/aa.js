@@ -1,31 +1,28 @@
-import RGB from "./core/RGB";
-import RGBI from "./core/RGBI";
-import Image from "./core/Image";
+import AAImage from "./core/AAImage";
+import monoProcessor from "./core/monoProcessor";
+import rgbProcessor from "./core/rgbProcessor";
 import { mapRange } from "./utils";
 
-let color = {};
-
 export default function factory(options) {
-    return function (image) {
-        return aa(image, options);
-    };
+    return (image) => aa(image, options);
 }
 
-function aa(image, options) {
-    const { width, height, colorful } = options;
+export function aa(image, options) {
+    const { width, height, colored = false } = options;
 
     const bw = image.width / width;
     const bh = image.height / height;
 
-    let imin = 255;
-    let imax = 0;
+    let minMono = 255;
+    let maxMono = 0;
 
-    const aaImage = new Image(width, height);
+    const data = new Array(width * height);
+    let k = 0;
 
     for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
 
-            color = analyzeBlock(
+            const color = analyzeColors(
                 image,
                 ~~(j * bw),
                 ~~(i * bh),
@@ -33,49 +30,53 @@ function aa(image, options) {
                 bh
             );
 
-            if (color.intensity > imax) {
-                imax = color.intensity;
+            if (color.mono > maxMono) {
+                maxMono = color.mono;
             }
-            if (color.intensity < imin) {
-                imin = color.intensity;
+            if (color.mono < minMono) {
+                minMono = color.mono;
             }
 
-            aaImage.data.push(color);
+            data[k++] = color;
         }
     }
 
-    normalizeIntensity(aaImage, imin, imax);
-
-    aaImage.colorful = colorful;
+    const aaImage = new AAImage({
+        width,
+        height,
+        data,
+        colorProcessor: monoProcessor,
+        meta: { colored }
+    });
+    
+    normalizeGrayscale(aaImage, minMono, maxMono);
 
     return aaImage;
 }
 
-function analyzeBlock(image, x, y, width, height) {
-    const avgColor = new RGB();
+function analyzeColors(image, x, y, width, height) {
+    const avgColor = { r: 0, g: 0, b: 0 };
     let count = 0;
-    let color;
 
     for (let row = 0; row < height; row++) {
         for (let col = 0; col < width; col++) {
-            color = image.getAt(x + col, y + row);
-            avgColor.addc(color);
+            rgbProcessor.addc(avgColor, image.getAt(x + col, y + row));
             count++;
         }
     }
 
-    avgColor.div(count);
+    rgbProcessor.div(avgColor, count);
 
-    return new RGBI(
-        avgColor.r,
-        avgColor.g,
-        avgColor.b,
-        avgColor.getGrayscale()
-    );
+    return {
+        r: avgColor.r,
+        g: avgColor.g,
+        b: avgColor.b,
+        mono: rgbProcessor.getGrayscale(avgColor)
+    };
 }
 
-function normalizeIntensity(img, a, b) {
-    img.filter((color) => {
-        color.intensity = ~~mapRange(color.intensity, a, b, 0, 255);
+function normalizeGrayscale(img, a, b) {
+    img.process((color) => {
+        color.mono = ~~mapRange(color.mono, a, b, 0, 255);
     });
 }

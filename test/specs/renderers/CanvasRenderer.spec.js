@@ -1,9 +1,7 @@
 import { expect } from "chai";
-import { spy } from "sinon";
 
 import canvasRenderer from "../../../src/renderers/CanvasRenderer";
-import Image from "../../../src/core/Image";
-import RGBI from "../../../src/core/RGBI";
+import AAImage from "../../../src/core/AAImage";
 
 describe("renderers/CanvasRenderer", () => {
 
@@ -12,7 +10,7 @@ describe("renderers/CanvasRenderer", () => {
 
         const el = render(createTestImage());
 
-        expect(el.nodeType).to.eql(1);
+        expect(el.nodeType).to.eql(Node.ELEMENT_NODE);
         expect(el.nodeName.toLowerCase()).to.eql("canvas");
     });
 
@@ -25,36 +23,15 @@ describe("renderers/CanvasRenderer", () => {
         expect(el.height).to.eql(110);
     });
 
-    it("renders monochrome by default", () => {
-        const render = createRenderer();
-        const monochroneSpy = spy(canvasRenderer.Class.prototype, "renderMonochrome");
-
-        render(createTestImage());
-
-        expect(monochroneSpy.called).to.be.ok;
-    });
-
-    it("preserves colors if enabled", () => {
-        const render = createRenderer();
-        const colorfulSpy = spy(canvasRenderer.Class.prototype, "renderColorful");
-        const image = createTestImage();
-        image.colorful = true;
-
-        render(image);
-
-        expect(colorfulSpy.called).to.be.ok;
-    });
-
     function createRenderer(options) {
         return canvasRenderer(options);
     }
 
     function createTestImage() {
-        const image = new Image(2, 1);
-
-        image.data[0] = new RGBI(0, 0, 0, 255);
-        image.data[1] = new RGBI(255, 255, 255, 0);
-
-        return image;
+        const data = [
+            { r: 0, g: 0, b: 0, mono: 255 },
+            { r: 255, g: 255, b: 255, mono: 0 }
+        ];
+        return new AAImage({ width: 2, height: 1, data });
     }
 });

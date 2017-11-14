@@ -9,46 +9,36 @@ import linear from "../src/filters/linear";
 
 import aa from "../src/aa";
 
-import html from "../src/renderers/HTMLRenderer";
+import html, { ASCII_CHARSET } from "../src/renderers/HTMLRenderer";
 import canvas from "../src/renderers/CanvasRenderer";
 
 import { appendToBody } from "./utils";
 
-const charset = html.CHARSET.ASCII;
+const charset = ASCII_CHARSET;
 const resource = filename => `../resources/${ filename }`;
 
 const RES = {
     MONA: resource("mona.png"),
     LENNA: resource("lenna.png"),
+    MARYLIN: resource("marylin.jpg"),
     BBB: resource("bbb_720x480_30mb.mp4")
 };
 
 function mona() {
     ImageReader.fromURL(RES.MONA)
-        .pipe(aa({ width: 200, height: 160, colorful: false }))
-        .pipe(html({ charset }))
-        .pipe(appendToBody)
-        .end();
+        .map(aa({ width: 200, height: 160, colored: false }))
+        .map(html({ charset }))
+        .do(appendToBody)
+        .subscribe();
 }
 
 function lenna() {
     ImageReader.fromURL(RES.LENNA)
-        .pipe(aa({ width: 210, height: 105, colorful: true }))
-        .pipe(html({ charset }))
-        .pipe(appendToBody)
-        .end();
-}
-
-function bbb() {
-    VideoReader.fromVideoElement(document.querySelector("video"), { autoplay: false })
-        .pipe(aa({ width: 165, height: 68, colorful: false }))
-        .pipe(canvas({
-            charset: charset,
-            width: 696,
-            height: 476,
-            el: document.querySelector("#video-scene canvas")
-        }))
-        .end();
+        .map(aa({ width: 210, height: 105, colored: true }))
+        .map(inverse())
+        .map(html({ charset, background: "#000" }))
+        .do(appendToBody)
+        .subscribe();
 }
 
 function idata() {
@@ -65,18 +55,34 @@ function idata() {
     ctx.fillStyle = "#999";
     ctx.fillRect(160-40, 120-40, 80, 80);
 
-    const idata = ctx.getImageData(0, 0, 320, 240);
+    ImageDataReader.fromCanvas(drawingCanvas)
+        .map(aa({ width: 80, height: 25, colored: false }))
+        .map(html({ charset }))
+        .do(appendToBody)
+        .subscribe();
+}
 
-    ImageDataReader.fromImageData(idata)
-        .pipe(aa({ width: 80, height: 25, colorful: false }))
-        .pipe(html({ charset }))
-        .pipe(appendToBody)
-        .end();
+function bbb() {
+    const scene = document.createElement("canvas");
+    const video = document.createElement("video");
+    video.src = "../resources/bbb_720x480_30mb.mp4";
+    video.controls = true;
+
+    appendToBody(video);
+    appendToBody(scene);
+
+    VideoReader.fromVideoElement(video, { autoplay: false })
+        .map(aa({ width: 165, height: 68, colored: false }))
+        .map(canvas({
+            charset,
+            width: 696,
+            height: 476,
+            el: scene
+        }))
+        .subscribe();
 }
 
 mona();
 lenna();
 bbb();
 idata();
-
-

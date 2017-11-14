@@ -5,7 +5,7 @@ module.exports = function (config) {
         basePath: "",
         frameworks: ["mocha", "chai"],
         files: [
-            "./test/specs/**/*.js"
+            "./test/specs/**/*.spec.js"
         ],
         preprocessors: {
             "./test/**/*.js": ["webpack"]

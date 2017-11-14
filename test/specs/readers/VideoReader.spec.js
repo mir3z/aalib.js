@@ -1,48 +1,22 @@
+import Rx from "rxjs";
 import { expect } from "chai";
 
 import VideoReader from "../../../src/readers/VideoReader";
-import Stream from "../../../src/readers/Stream";
-import videoBase64 from "../../resources/video.base64";
+import { createTestVideoElement } from "../../utils";
 
 describe("readers/VideoReader", () => {
 
-    it("allows to construct a stream directly from URL", () => {
-        const stream = VideoReader.fromURL(videoBase64);
-
-        expect(stream).to.be.instanceOf(Stream);
+    it("creates Rx.Observable directly from URL", () => {
+        const observable = VideoReader.fromVideoElement(createTestVideoElement(), { autoplay: true });
+        expect(observable).to.be.instanceOf(Rx.Observable);
     });
 
-    it("allows to read image directly from URL", done => {
-        VideoReader
-            .fromURL(videoBase64, { autoplay: true })
-            .pipe(video => {
-                expectTestVideo(video);
-                done();
-            })
-            .end();
-    });
-
-    it("allows to construct a stream directly from HTML Video element", () => {
-        const stream = VideoReader.fromVideoElement(createTestVideoElement(), { autoplay: true });
-
-        expect(stream).to.be.instanceOf(Stream);
-    });
-
-    it("allows to read image directly from HTML Video element", done => {
+    it("reads image directly from HTML Video element", done => {
         VideoReader
             .fromVideoElement(createTestVideoElement(), { autoplay: true })
-            .pipe(video => {
-                expectTestVideo(video);
-                done();
-            })
-            .end();
+            .do(video => expectTestVideo(video))
+            .subscribe(() => done());
     });
-
-    function createTestVideoElement() {
-        const video = document.createElement("video");
-        video.src = videoBase64;
-        return video;
-    }
 
     function expectTestVideo(video) {
         expect(video).not.to.be.undefined;

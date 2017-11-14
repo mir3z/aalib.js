@@ -1,17 +1,14 @@
 import { range } from "../utils";
 import aafont from "../aafont";
 
-const ASCII_CHARSET = range(32, 126).map(code => String.fromCharCode(code));
-const SIMPLE_CHARSET = [".", ":", "*", "I", "$", "V", "F", "N", "M"];
-
-export default class Renderer {
+export default class BaseRenderer {
     constructor(options) {
         this.options = Object.assign({}, {
             charset: ASCII_CHARSET,
             fontFamily: "monospace"
         }, options);
 
-        this.fontmap = Renderer.buildFont(this.options.charset, {
+        this.fontmap = BaseRenderer.buildFont(this.options.charset, {
             fontFamily: this.options.fontFamily
         });
 
@@ -23,29 +20,31 @@ export default class Renderer {
     }
 
     processImage(image) {
-        for (let i = 0; i < image.data.length; i++) {
-            image.data[i].char = this.matchChar(image.data[i].intensity);
+        let i = image.data.length;
+        let pixel;
+
+        while (i--) {
+            pixel = image.data[i];
+            pixel.char = this.matchChar(pixel.mono);
         }
 
         return image;
     }
 
-    matchChar(val) {
-        let matched = this.fontmap[0];
-
-        if (matched[0] === val) {
-            return matched[0];
-        }
+    matchChar(monoValue) {
+        let match = { brightness: -1 };
 
         for (let i = 0; i < this.fontmap.length; i++) {
             const tuple = this.fontmap[i];
 
-            if (Math.abs(val - tuple[1]) < Math.abs(val - matched[1])) {
-                matched = tuple;
+            if (Math.abs(monoValue - tuple.brightness) <= Math.abs(monoValue - match.brightness)) {
+                match = tuple;
+            } else {
+                return match.char;
             }
         }
 
-        return matched[0];
+        return match.char;
     }
 
     static buildFont(charset, options) {
@@ -53,12 +52,10 @@ export default class Renderer {
     }
 }
 
+export const ASCII_CHARSET = range(32, 126).map(code => String.fromCharCode(code));
+export const SIMPLE_CHARSET = [".", ":", "*", "I", "$", "V", "F", "N", "M"];
+
 function memoize(func) {
     func._cache = [];
     return (arg) => func._cache[arg] || (func._cache[arg] = func(arg));
 }
-
-Renderer.CHARSET = {
-    ASCII: ASCII_CHARSET,
-    SIMPLE: SIMPLE_CHARSET
-};

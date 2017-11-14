@@ -1,59 +1,49 @@
-import Reader from "./Reader";
-import Image from "../core/Image";
+import AbstractReader from "./AbstractReader";
+import AAImage from "../core/AAImage";
 
-export default class ImageReader extends Reader {
+export default class ImageReader extends AbstractReader {
 
-    constructor() {
+    constructor(url) {
         super();
-        this.src = "";
-        this.img = null;
+        this.url = url;
     }
 
-    setSrc(src) {
-        this.src = src;
-    }
+    onRead(observer) {
+        const img = document.createElement("img");
+        img.crossOrigin = "Anonymous";
 
-    createImageElement() {
-        this.setImage(document.createElement("img"));
-    }
-
-    setImage(img) {
-        this.img = img;
-    }
-
-    onRead(stream, error) {
         const onLoad = () => {
-            this.img.removeEventListener("load", onLoad);
-            this.img.removeEventListener("error", onError);
-            stream(Image.fromHTMLImageElement(this.img));
+            removeListeners();
+            observer.next(AAImage.fromHTMLImageElement(img));
+            observer.complete();
         };
 
-        const onError = () => {
-            this.img.removeEventListener("load", onLoad);
-            this.img.removeEventListener("error", onError);
-            error("ImageReader: Error loading image");
+        const onError = (e) => {
+            removeListeners();
+            observer.error(e);
         };
 
-        this.img.addEventListener("load", onLoad);
-        this.img.addEventListener("error", onError);
+        const removeListeners = () => {
+            img.removeEventListener("load", onLoad);
+            img.removeEventListener("error", onError);
+        };
 
-        if (this.img.complete && this.img.naturalWidth) {
+        img.addEventListener("load", onLoad);
+        img.addEventListener("error", onError);
+
+        if (img.complete && img.naturalWidth) {
             onLoad();
-        } else if (this.src) {
-            this.img.src = this.src;
+        } else if (this.url) {
+            img.src = this.url;
         }
     }
 
     static fromURL(url) {
-        const reader = new ImageReader();
-        reader.setSrc(url);
-        reader.createImageElement();
+        const reader = new ImageReader(url);
         return reader.read();
     }
 
-    static fromImg(image) {
-        const reader = new ImageReader();
-        reader.setImage(image);
-        return reader.read();
+    static fromHTMLImage(img) {
+        return ImageReader.fromURL(img.src);
     }
 }

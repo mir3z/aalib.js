@@ -1,11 +1,9 @@
-import linear from "./linear";
+import { linearTransformation } from "./linear";
 
 export default function factory(val) {
-    return function (image) {
-        return contrast(image, val);
-    };
+    return image => contrast(image, val);
 }
 
-export function contrast(image, val) {
-    return linear(val || 1, 0)(image);
+export function contrast(image, val = 1) {
+    return linearTransformation(image, val, 0);
 }

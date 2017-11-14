@@ -1,11 +1,9 @@
-export default function factory(alfa, beta) {
-    return function (img) {
-        return linearTransform(img, alfa, beta);
-    };
+export default function factory(alpha, beta) {
+    return image => linearTransformation(image, alpha, beta);
 }
 
-export function linearTransform(image, alfa, beta) {
-    return image.filter((color) => {
-        return color.mul(alfa).add(beta).clamp();
+export function linearTransformation(image, alpha, beta) {
+    return image.process((color, processor) => {
+        processor.mul(color, alpha).add(color, beta).clamp(color);
     });
 }

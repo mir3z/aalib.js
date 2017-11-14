@@ -1,9 +1,7 @@
 import { expect } from "chai";
 
-import htmlRenderer from "../../../src/renderers/HTMLRenderer";
-
-import Image from "../../../src/core/Image";
-import RGBI from "../../../src/core/RGBI";
+import htmlRenderer, { SIMPLE_CHARSET } from "../../../src/renderers/HTMLRenderer";
+import AAImage from "../../../src/core/AAImage";
 
 describe("renderers/HTMLRenderer", () => {
 
@@ -29,7 +27,7 @@ describe("renderers/HTMLRenderer", () => {
         const render = createRenderer();
 
         const image = createTestImage();
-        image.colorful = true;
+        image.meta.colored = true;
         const el = render(image);
 
         expectHTMLElement(el, { tagName: "pre" });
@@ -41,7 +39,7 @@ describe("renderers/HTMLRenderer", () => {
     function expectHTMLElement(el, checks) {
         checks = checks || {};
 
-        expect(el.nodeType).to.eql(1);
+        expect(el.nodeType).to.eql(Node.ELEMENT_NODE);
 
         checks.tagName && expect(el.nodeName.toLowerCase()).to.eql(checks.tagName);
         checks.htmlContent && expect(el.innerHTML).to.eql(checks.htmlContent);
@@ -49,16 +47,15 @@ describe("renderers/HTMLRenderer", () => {
 
     function createRenderer(options) {
         options = options || {};
-        options.charset = htmlRenderer.CHARSET.SIMPLE;
+        options.charset = SIMPLE_CHARSET;
         return htmlRenderer(options);
     }
 
     function createTestImage() {
-        const image = new Image(2, 1);
-
-        image.data[0] = new RGBI(0, 0, 0, 255);
-        image.data[1] = new RGBI(255, 255, 255, 0);
-
-        return image;
+        const data = [
+            { r: 0, g: 0, b: 0, mono: 255 },
+            { r: 255, g: 255, b: 255, mono: 0 }
+        ];
+        return new AAImage({ width: 2, height: 1, data });
     }
 });

@@ -1,54 +1,6 @@
-import Renderer from "../../src/renderers/Renderer";
+import BaseRenderer from "./BaseRenderer";
 
-class HTMLRenderer extends Renderer {
-
-    constructor(options) {
-        super(Object.assign({}, {
-            tagName: "pre"
-        }, options));
-
-        this.el = this.options.el || document.createElement(this.options.tagName);
-        this.el.style.fontFamily = this.options.fontFamily;
-    }
-
-    render(image) {
-        super.render(image);
-
-        if (image.colorful) {
-            this.colorize(image.data);
-        }
-
-        const content = splitLines(image.data, image.width);
-
-        if (image.colorful) {
-            this.el.innerHTML = content;
-        } else {
-            this.el.textContent = content;
-        }
-
-        return this.el;
-    }
-
-    colorize(pixels) {
-        return pixels.map(pixel => {
-            pixel.char = `<span style="color: rgb(${ pixel.r }, ${ pixel.g }, ${ pixel.b })">${ pixel.char }</span>`;
-            return pixel;
-        });
-    }
-}
-
-function splitLines(colors, length) {
-    let str = "";
-
-    for (let i = 0; i < colors.length; i++) {
-        if (i > 0 && i % length === 0) {
-            str += "\n";
-        }
-        str += colors[i].char;
-    }
-
-    return str;
-}
+export { ASCII_CHARSET, SIMPLE_CHARSET } from "./BaseRenderer";
 
 export default function factory(options) {
     const renderer = new HTMLRenderer(options);
@@ -56,5 +8,66 @@ export default function factory(options) {
     return data => renderer.render(data);
 }
 
-factory.CHARSET = Renderer.CHARSET;
-factory.Class = HTMLRenderer;
+export class HTMLRenderer extends BaseRenderer {
+
+    constructor(options) {
+        super(Object.assign({}, {
+            tagName: "pre",
+            background: "#fff"
+        }, options));
+
+        this.el = this.options.el || document.createElement(this.options.tagName);
+        this.el.style.fontFamily = this.options.fontFamily;
+        this.el.style.backgroundColor = this.options.background;
+    }
+
+    render(image) {
+        super.render(image);
+
+        const renderer = image.meta.colored
+            ? colorRenderer(this.el)
+            : monoRenderer(this.el);
+
+        return renderer(image);
+    }
+}
+
+function colorRenderer(el) {
+    const wrapInColor = ({ char, r, g, b }) => (
+        `<span style="color: rgb(${ r }, ${ g }, ${ b })">${ char }</span>`
+    );
+
+    const toString = stringRenderer(wrapInColor);
+
+    return image => {
+        el.innerHTML = toString(image);
+        return el;
+    };
+}
+
+function monoRenderer(el) {
+    const toString = stringRenderer(({ char }) => char);
+
+    return image => {
+        el.textContent = toString(image);
+        return el;
+    };
+}
+
+function stringRenderer(renderPixel) {
+    return ({ width, data }) => {
+        let str = "";
+        let w = width;
+
+        for (let i = 0, length = data.length; i < length; i++, w--) {
+            if (w === 0) {
+                str += "\n";
+                w = width;
+            }
+
+            str += renderPixel(data[i]);
+        }
+
+        return str;
+    };
+}

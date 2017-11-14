@@ -1,18 +1,28 @@
-import Renderer from "../../src/renderers/Renderer";
+import BaseRenderer from "../../src/renderers/BaseRenderer";
 
-class CanvasRenderer extends Renderer {
+export { ASCII_CHARSET, SIMPLE_CHARSET } from "./BaseRenderer";
+
+export default function factory(options) {
+    const renderer = new CanvasRenderer(options);
+    return image => renderer.render(image);
+}
+
+export class CanvasRenderer extends BaseRenderer {
 
     constructor(options) {
         super(Object.assign({}, {
             fontSize: 7,
             lineHeight: 7,
+            charWidth: 4.2,
             width: 400,
-            height: 300
+            height: 300,
+            background: "#fff"
         }, options));
 
         this.el = this.options.el || document.createElement("canvas");
         this.el.width = this.options.width;
         this.el.height = this.options.height;
+        this.el.style.backgroundColor = this.options.background;
 
         this.ctx = this.el.getContext("2d");
         this.ctx.fillStyle = "#000";
@@ -24,48 +34,15 @@ class CanvasRenderer extends Renderer {
     render(image) {
         super.render(image);
 
-        if (image.colorful) {
-            this.renderColorful(image);
-        } else {
-            this.renderMonochrome(image);
-        }
+        this.clearCanvas();
+
+        const renderer = image.meta.colored
+            ? colorRenderer(this.ctx, this.options)
+            : monoRenderer(this.ctx, this.options);
+
+        renderer(image);
 
         return this.el;
-    }
-
-    renderColorful(image) {
-        const lineHeight = this.options.lineHeight;
-        let x;
-        let y;
-        let color;
-
-        this.clearCanvas();
-
-        for (let i = 0; i < image.data.length; i++) {
-            x = i % image.width;
-            y = ~~(i / image.width);
-            color = image.data[i];
-
-            this.ctx.fillStyle = `rgb(${ color.r }, ${ color.g }, ${ color.b })`;
-            this.ctx.fillText(image.data[i].char, x * 4.2, y * lineHeight);
-        }
-    }
-
-    renderMonochrome(image) {
-        const lineHeight = this.options.lineHeight;
-        let y;
-        let line;
-
-        this.clearCanvas();
-
-        for (let i = 0; i < image.data.length; i += image.width) {
-            y = ~~(i / image.width);
-            line = image.data
-                .slice(i, i + image.width)
-                .map((data) => data.char)
-                .join("");
-            this.ctx.fillText(line, 0, y * lineHeight);
-        }
     }
 
     clearCanvas() {
@@ -73,11 +50,40 @@ class CanvasRenderer extends Renderer {
     }
 }
 
-export default function factory(options) {
-    const renderer = new CanvasRenderer(options);
+function colorRenderer(ctx, options) {
+    return ({ data, width }) => {
+        const { charWidth, lineHeight } = options;
+        let x;
+        let y;
+        let color;
 
-    return (data) => renderer.render(data);
+        let i = data.length;
+        while (i--) {
+            x = i % width;
+            y = ~~(i / width);
+            color = data[i];
+
+            ctx.fillStyle = `rgb(${ color.r }, ${ color.g }, ${ color.b })`;
+            ctx.fillText(data[i].char, x * charWidth, y * lineHeight);
+        }
+    };
 }
 
-factory.CHARSET = Renderer.CHARSET;
-factory.Class = CanvasRenderer;
+function monoRenderer(ctx, options) {
+    return ({ data, width }) => {
+        const lineHeight = options.lineHeight;
+        let y;
+        let line = "";
+
+        for (let i = 0, length = data.length; i < length; i += width) {
+            y = ~~(i / width);
+            line = "";
+
+            for (let j = i; j < i + width; j++) {
+                line += data[j].char;
+            }
+
+            ctx.fillText(line, 0, y * lineHeight);
+        }
+    };
+}

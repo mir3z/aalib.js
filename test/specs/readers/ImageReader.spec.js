@@ -1,48 +1,37 @@
+import Rx from "rxjs";
 import { expect } from "chai";
 
 import ImageReader from "../../../src/readers/ImageReader";
-import Stream from "../../../src/readers/Stream";
 import rgbBase64Image from "../../resources/rgb.base64";
+import { createTestHTMLImage } from "../../utils";
 
 describe("readers/ImageReader", () => {
 
-    it("allows to construct a stream directly from URL", () => {
-        const stream = ImageReader.fromURL(rgbBase64Image);
-
-        expect(stream).to.be.instanceOf(Stream);
+    it("creates Rx.Observable directly from URL", () => {
+        expect(ImageReader.fromURL(rgbBase64Image)).to.be.instanceOf(Rx.Observable);
     });
 
-    it("allows to read image directly from URL", done => {
+    it("reads image directly from URL", done => {
         ImageReader
             .fromURL(rgbBase64Image)
-            .pipe(image => {
-                expectTestImage(image);
-                done();
-            })
-            .end();
+            .do(image => expectTestImage(image))
+            .subscribe(() => done());
     });
 
-    it("allows to construct a stream directly from HTMLImageElement", () => {
-        const stream = ImageReader.fromImg(createTestHTMLImage());
-
-        expect(stream).to.be.instanceOf(Stream);
+    it("creates Rx.Observable directly from HTMLImageElement", () => {
+        return createTestHTMLImage().then(img => {
+            expect(ImageReader.fromHTMLImage(img)).to.be.instanceOf(Rx.Observable);
+        });
     });
 
-    it("allows to read image directly from HTMLImageElement", done => {
-        ImageReader
-            .fromImg(createTestHTMLImage())
-            .pipe(image => {
-                expectTestImage(image);
-                done();
-            })
-            .end();
+    it("reads image directly from HTMLImageElement", done => {
+        createTestHTMLImage().then(img => {
+            ImageReader
+                .fromHTMLImage(img)
+                .do(image => expectTestImage(image))
+                .subscribe(() => done());
+        });
     });
-
-    function createTestHTMLImage() {
-        const img = new Image();
-        img.src = rgbBase64Image;
-        return img;
-    }
 
     function expectTestImage(image) {
         expect(image.data).to.eql([
