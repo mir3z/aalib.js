@@ -6,15 +6,15 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <script type="text/javascript" src="../build/aalib.js"></script>
+    <script type="text/javascript" src="../dist/aalib.js"></script>
     <script type="text/javascript">
         aalib.read.image.fromURL("../resources/lenna.png")
-            .pipe(aalib.aa({ width: 210, height: 105, colorful: true }))
-            .pipe(aalib.render.html())
-            .pipe(function (el) {
+            .map(aalib.aa({ width: 210, height: 105, colored: true }))
+            .map(aalib.render.html({ background: "#fff", fontFamily: "Ubuntu Mono, monospace" }))
+            .do(function (el) {
                 document.body.appendChild(el);
             })
-            .end();
+            .subscribe();
     </script>
 </body>
 </html>

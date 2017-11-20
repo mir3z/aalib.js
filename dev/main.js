@@ -1,3 +1,5 @@
+import "rxjs/add/operator/do";
+
 import ImageReader from "../src/readers/ImageReader";
 import VideoReader from "../src/readers/VideoReader";
 import ImageDataReader from "../src/readers/ImageDataReader";
@@ -24,12 +26,21 @@ const RES = {
     BBB: resource("bbb_720x480_30mb.mp4")
 };
 
-function mona() {
-    ImageReader.fromURL(RES.MONA)
-        .map(aa({ width: 200, height: 160, colored: false }))
-        .map(html({ charset }))
-        .do(appendToBody)
+function pipeline(...args) {
+    const src = args.shift();
+
+    args
+        .reduce((acc, it) => acc.map(it), src)
         .subscribe();
+}
+
+function mona() {
+    pipeline(
+        ImageReader.fromURL(RES.MONA),
+        aa({ width: 200, height: 160, colored: false }),
+        html({ charset }),
+        appendToBody
+    );
 }
 
 function lenna() {
@@ -62,6 +73,36 @@ function idata() {
         .subscribe();
 }
 
+function localImage() {
+    const filePicker = document.createElement("input");
+    filePicker.type = "file";
+    filePicker.addEventListener("change", createFileHandler(createAA));
+
+    appendToBody(filePicker);
+
+    function createFileHandler(createAA) {
+        return (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                createAA(e.target.result);
+            };
+
+            reader.readAsDataURL(file);
+        };
+    }
+
+    function createAA(imageUrl) {
+        ImageReader.fromURL(imageUrl)
+            .map(aa({ width: 210, height: 105, colored: false }))
+            .map(html({ charset }))
+            .do((el) => {
+                filePicker.parentNode.insertBefore(el, filePicker.nextSibling);
+            })
+            .subscribe();
+    }
+}
+
 function bbb() {
     const scene = document.createElement("canvas");
     const video = document.createElement("video");
@@ -72,7 +113,7 @@ function bbb() {
     appendToBody(scene);
 
     VideoReader.fromVideoElement(video, { autoplay: false })
-        .map(aa({ width: 165, height: 68, colored: false }))
+        .map(aa({ width: 165, height: 68, colored: true }))
         .map(canvas({
             charset,
             width: 696,
@@ -86,3 +127,4 @@ mona();
 lenna();
 bbb();
 idata();
+localImage();

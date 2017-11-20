@@ -2,14 +2,14 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>aalib.js :: Marylin</title>
+    <title>aalib.js :: Monica</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body class="inverse">
     <script type="text/javascript" src="../dist/aalib.js"></script>
     <script type="text/javascript">
-        aalib.read.image.fromURL("../resources/marylin.jpg")
-            .map(aalib.aa({ width: 530, height: 160, colored: true }))
+        aalib.read.image.fromURL("../resources/monica.jpg")
+            .map(aalib.aa({ width: 520, height: 143, colored: true }))
             .map(aalib.filter.inverse())
             .map(aalib.render.html({ background: "#000", fontFamily: "Ubuntu Mono, monospace" }))
             .do(function (el) {

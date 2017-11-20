@@ -6,15 +6,15 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <script type="text/javascript" src="../build/aalib.js"></script>
+    <script type="text/javascript" src="../dist/aalib.js"></script>
     <script type="text/javascript">
         aalib.read.image.fromURL("../resources/mona.png")
-            .pipe(aalib.aa({ width: 200, height: 160 }))
-            .pipe(aalib.render.html())
-            .pipe(function (el) {
+            .map(aalib.aa({ width: 200, height: 160 }))
+            .map(aalib.render.html({ background: "#fff", fontFamily: "monospace" }))
+            .do(function (el) {
                 document.body.appendChild(el);
             })
-            .end();
+            .subscribe();
     </script>
 </body>
 </html>
