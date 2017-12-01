@@ -5,7 +5,7 @@ export default class AbstractReader {
     read() {
         return Observable.create(observer => {
             this.onRead(observer);
-            return this.onDispose;
+            return this.onDispose.bind(this);
         });
     }
 

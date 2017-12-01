@@ -1,0 +1,40 @@
+@import url("https://fonts.googleapis.com/css?family=Lato|Inconsolata|Roboto+Mono|Source+Code+Pro|Ubuntu+Mono|Cutive+Mono");
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+pre {
+    margin: 0;
+    padding: 0;
+}
+
+input:not([type="file"]),
+select {
+    border: 1px solid #a1a6af;
+    border-radius: 4px;
+    background-color: #fff;
+    height: 23px;
+}
+
+input:not([type="file"]) {
+    padding: 0 5px;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+input:disabled {
+    background: rgba(100, 100, 100, 0.1);
+}
+
+input:focus,
+select:focus {
+    border-color: #7b7d82;
+    outline: none;
+}

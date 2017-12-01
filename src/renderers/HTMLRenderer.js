@@ -13,16 +13,23 @@ export class HTMLRenderer extends BaseRenderer {
     constructor(options) {
         super(Object.assign({}, {
             tagName: "pre",
-            background: "#fff"
+            fontSize: 7,
+            background: "#fff",
+            color: "#000"
         }, options));
 
         this.el = this.options.el || document.createElement(this.options.tagName);
+        this.el.style.fontSize = this.options.fontSize + "px";
         this.el.style.fontFamily = this.options.fontFamily;
         this.el.style.backgroundColor = this.options.background;
     }
 
     render(image) {
         super.render(image);
+
+        if (!image.meta.colored) {
+            this.el.style.color = this.options.color;
+        }
 
         const renderer = image.meta.colored
             ? colorRenderer(this.el)

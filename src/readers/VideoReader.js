@@ -15,25 +15,30 @@ export default class VideoReader extends AbstractReader {
     onRead(observer) {
         const video = this.video;
 
-        const playbackLoop = () => {
+        this.playbackLoop = () => {
             if (video.paused || video.ended) {
                 return;
             }
 
             observer.next(AAImage.fromImageData(this.captureFrame(video)));
 
-            requestAnimationFrame(playbackLoop);
+            requestAnimationFrame(this.playbackLoop);
         };
 
-        const onError = () => {
+        this.onError = () => {
             const { src, error: { code, message } } = video;
 
-            video.removeEventListener("play", playbackLoop);
+            video.removeEventListener("play", this.playbackLoop);
             observer.error(`Error occurred while trying to play ${ src }: : ${ code }, ${ message }`);
         };
 
-        video.addEventListener("error", onError);
-        video.addEventListener("play", playbackLoop);
+        video.addEventListener("error", this.onError);
+        video.addEventListener("play", this.playbackLoop);
+    }
+
+    onDispose() {
+        this.video.removeEventListener("play", this.playbackLoop);
+        this.video.removeEventListener("error", this.onError);
     }
 
     static fromVideoElement(video, options) {

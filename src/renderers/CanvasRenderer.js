@@ -16,7 +16,8 @@ export class CanvasRenderer extends BaseRenderer {
             charWidth: 4.2,
             width: 400,
             height: 300,
-            background: "#fff"
+            background: "#fff",
+            color: "#000"
         }, options));
 
         this.el = this.options.el || document.createElement("canvas");
@@ -25,7 +26,6 @@ export class CanvasRenderer extends BaseRenderer {
         this.el.style.backgroundColor = this.options.background;
 
         this.ctx = this.el.getContext("2d");
-        this.ctx.fillStyle = "#000";
         this.ctx.textBaseline = "top";
         this.ctx.textAlign = "start";
         this.ctx.font = this.options.fontSize + "px " + this.options.fontFamily;
@@ -74,6 +74,8 @@ function monoRenderer(ctx, options) {
         const lineHeight = options.lineHeight;
         let y;
         let line = "";
+
+        ctx.fillStyle = options.color;
 
         for (let i = 0, length = data.length; i < length; i += width) {
             y = ~~(i / width);
