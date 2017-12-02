@@ -1,6 +1,6 @@
 # aalib.js
 
-This library allows to automatically convert images and movies to [ASCII art](https://en.wikipedia.org/wiki/ASCII_art).
+This library converts images and movies to [ASCII art](https://en.wikipedia.org/wiki/ASCII_art).
 
 It is written entirely in JavaScript and is intended to use in web browsers.
 
@@ -9,112 +9,140 @@ It is written entirely in JavaScript and is intended to use in web browsers.
 * [Mona](http://mir3z.github.io/aalib.js/examples/mona.html) ([original](http://mir3z.github.io/aalib.js/resources/mona.png))
 * [Lenna](http://mir3z.github.io/aalib.js/examples/lenna.html) ([original](http://mir3z.github.io/aalib.js/resources/lenna.png))
 * [Marylin](http://mir3z.github.io/aalib.js/examples/marylin.html) ([original](http://mir3z.github.io/aalib.js/resources/marylin.jpg))
-* [Big Buck Bunny](http://mir3z.github.io/aalib.js/examples/bbb.html) 
+* [Evangeline](http://mir3z.github.io/aalib.js/examples/evangeline.html) ([original](http://mir3z.github.io/aalib.js/resources/evangeline.jpg))
+* [Monica](http://mir3z.github.io/aalib.js/examples/monica.html) ([original](http://mir3z.github.io/aalib.js/resources/monica.jpg))
+* [Big Buck Bunny](http://mir3z.github.io/aalib.js/examples/bbb.html)
+
+## Interactive demo
+
+TBD
 
 ## Usage
 
-The library uses streams to process images. This means that an image is firstly read and then passed through a stream.
-A stream consists of processors which can read data from its input, process, and write to output. Chaining processors 
-together makes a series of transformations which eventually lead to ASCII art. 
+Converting to ASCII art is performed by reading an image (or a video)
+then processing it by a series of processors and finally rendering the output.
 
-In general the stream has the following form:
+In general it has the following form:
 
-`Reader` >> `Filter` >> `AA` >> `Filter` >> `Renderer`
+`Reader` >> `Pre-Filter` >> `AA` >> `Post-Filter` >> `Renderer`
 
 This means what follows:
 
 1. `Reader` reads image (static or moving) and converts it to internal representation.
-2. (Optional) `Filter` (e.g. brightness or contrast) can be applied to the image from 1st step.
-3. `AA` transforms image from 2nd step to ASCII art.
-4. (Optional) Another `Filter` can be applied but in this step it is applied to ASCII art image.
-5. `Renderer` renders image from 4th step to given output.
+2. (Optional) `Pre-Filter` (e.g. brightness or contrast) can be applied to the image from the 1st step.
+3. `AA` transforms image from the 2nd step to ASCII art.
+4. (Optional) Another `Post-Filter` can be applied but in this step it is applied to ASCII art image.
+5. `Renderer` renders image from the 4th step to a given output.
 
 That is how it looks expressed in a code:
 
 ```javascript
 aalib.read.image.fromURL("marylin.jpg")
-    .pipe(aalib.filter.contrast(0.9))
-    .pipe(aalib.aa({ width: 530, height: 160 }))
-    .pipe(aalib.filter.brightness(10))
-    .pipe(aalib.render.html({ el: document.querySelector(".aa-image") }))
-    .end();
+    .map(aalib.filter.contrast(0.9))
+    .map(aalib.aa({ width: 530, height: 160 }))
+    .map(aalib.filter.brightness(10))
+    .map(aalib.render.html({ el: document.querySelector(".aa-image") }))
+    .subscribe();
 ```
 
-See [API](#api) section for more details on how processors work. 
+See [API](#api) section for more details on how the processors work.
+
+The library is using [RxJS](https://github.com/Reactive-Extensions/RxJS) under the hood.
+Every reader actually returns an [Observable](http://reactivex.io/documentation/observable.html) so processing
+is not started until `subscribe` method is called. Data emitted by observables may be
+transformed by [map](http://reactivex.io/documentation/operators/map.html) operator, or you are allowed
+to perform any operation (like logging or side-effects) by using [do](http://reactivex.io/documentation/operators/do.html) operator.
+
+The library is distributed as:
+* a standalone UMD library (see `dist` directory) - exposed as a global `aalib` namespace.
+* ES6 modules (see `lib` directory).
 
 ## API
 
 ### Readers
 
-These are objects which allow to read from various sources and write to a stream.  
+These are objects which read from various sources and write to a processing stream.
 
 #### ImageReader
  
-Exposed in `aalib.read.image`
+Exposed in `aalib.read.image` and as a default export in `readers/ImageReader`.
  
-It has two handy factory methods:
+Factory methods:
 
-* <code>fromURL(<i>url:string</i>)</code> - creates `ImageReader` which reads from given URL and returns stream.
-* <code>fromImg(<i>img:HTMLImageElement</i>)</code> - creates `ImageReader` which reads from given `HTMLImageElement` 
-and returns stream.
+* <code>fromURL(<i>url:string</i>)</code> - creates `ImageReader` reading from given URL and returns observable.
+* <code>fromHTMLImage(<i>img:HTMLImageElement</i>)</code> - creates `ImageReader` reading given `HTMLImageElement`
+and returns observable.
 
 #### VideoReader
 
-Exposed in `aalib.read.video`
+Exposed in `aalib.read.video` and as a default export in `readers/VideoReader`.
  
-It has two handy factory methods:
+Factory methods:
 
-* <code>fromURL(<i>url:string</i>, <i>options:object</i>)</code> - creates `VideoReader` which reads from given URL 
-and returns stream/
-* <code>fromVideoElement(<i>video:HTMLVideoElement</i>, <i>options:object</i>)</code> - creates `VideoReader` which 
-reads from given `HTMLVideoElement` and returns stream.
+* <code>fromVideoElement(<i>video:HTMLVideoElement</i>, <i>options:object</i>)</code> - creates `VideoReader` reading
+from given `HTMLVideoElement` and returns observable.
 
-Both methods accepts the following options:
+`options` accepts the following options:
 
-* `autoplay:boolean` - If `true`, start playing video automatically, default: `false`
+* `autoplay:boolean` - If `true`, starts playing video automatically, default: `false`
 
 #### ImageDataReader
 
-Exposed as `aalib.read.imageData`. Use the `fromImageData` factory method to create a stream from an image data object.
+Exposed as `aalib.read.imageData` or as a default export in `readers/ImageDataReader`.
 
-An image data object contains three mandatory fields; `width`, `height`, and `data`. The first two describe the dimensions of the image data, while the third is an array of _width * height * 4_ elements, where each pixels is represented as r,g,b,alpha.
-
-ImageData object are returned for example when getting pixel data from a canvas, or when rendering to an offscreen buffer using WebGL.
+Use the `fromImageData` factory method to create observable from an image data object.
+An image data object contains three mandatory fields; `width`, `height`, and `data`.
+The first two describe the dimensions of the image data, while the third is an array
+of _width * height * 4_ elements, where each pixels is represented as r, g, b, alpha.
+ImageData object are returned for example when getting pixel data from a canvas, or
+when rendering to an offscreen buffer using WebGL.
 
 ### Filters
 
-Filters are processors which changes every component of an image. When a filter is applied to a regular image it 
+Filters are processors changing each component of an image. When a filter is applied to a regular image it
 changes a RGB value. When a filter is applied to ASCII art image it changes the only component the image
-has - intensity. Intensity is a value which tells whether part of an image should be rendered as a "dark" or "light" 
-character.
+has - intensity. Intensity is a value which tells whether part of an image should be rendered as a "dark"
+or "light" character.
 
 #### inverse
 
-<code>aalib.filter.inverse()</code>
+Exposed as `aalib.filter.inverse` or as a default export in `filters/inverse`.
 
-This filter inverses each component of an image. By inversion I mean the following function: `f(x) = 255 - x` 
+<code>
+aalib.filter.inverse()
+</code>
+
+This filter inverses each component of an image. By inversion I mean the function: `f(x) = 255 - x`
 
 #### linear
 
+Exposed as `aalib.filter.linear` or as a default export in `filters/linear`.
+
 <code>aalib.filter.linear(<i>a:number</i>, <i>b:number</i>)</code>
 
-It applies linear transformation to every image component. The linear transformation is a function: `f(x) = ax + b`
+It applies the linear transformation: `f(x) = ax + b`
 
 #### brightness
 
+Exposed as `aalib.filter.brightness` or as a default export in `filters/brightness`.
+
 <code>aalib.filter.brightness(<i>value:number</i>)</code>
 
-It changes brightness of an image. This is a special case of linear filter where `a = 1`.
+It changes the brightness of an image. This is the special case of the linear filter where `a = 1`.
 
 #### contrast
 
+Exposed as `aalib.filter.contrast` or as a default export in `filters/contrast`.
+
 <code>aalib.filter.contrast(<i>value:number</i>)</code>
 
-It changes contrast of an image. This is a special case of linear filter where `b = 0`.
+It changes the contrast of an image. This is the special case of the linear filter where `b = 0`.
 
 ### AA
 
 This processor handles actual conversion to ASCII art image.
+
+Exposed as `aalib.aa` or as a default export in `aa`.
 
 <code>aalib.aa(<i>options:object</i>)</code>
 
@@ -122,18 +150,28 @@ It accepts the following options:
 
 * `width:number` - width (in characters) of target ASCII art image.
 * `height:number` - height (in characters) of target ASCII art image.
-* `colorful:boolean` - if `true`, colors of an original image are preserved. Every character in target image has a
-mean color of area it represents in an original image.
+* `colored:boolean` - if `true`, the colors of the original image are preserved. Every character in a target image has a
+mean color of area it represents in the original image.
 
 ### Renderers
 
-Renderers are used to output ASCII art image. They can render using different characters set. 
-By default two charsets are defined and exposed under `CHARSET` property of every renderer:
+Renderers outputs ASCII art image. They can render using different characters set.
+By default two charsets are defined are defined:
 
-* `ASCII` - printable ASCII characters - range: <32, 127>. This is the default one.
-* `SIMPLE` - characters from list `['.', ':', '*', 'I', '$', 'V', 'F', 'N', 'M']`.
+* `ASCII_CHARSET` - printable ASCII characters - range: <32, 127>. This is the default one.
+* `SIMPLE_CHARSET` - characters from list `['.', ':', '*', 'I', '$', 'V', 'F', 'N', 'M']`.
+
+They are exposed in each renderer as named export:
+
+`import { ASCII_CHARSET, SIMPLE_CHARSET } from "renderers/HTMLRenderer";`
+
+or as
+
+`aalib.charset`
 
 #### HTMLRenderer
+
+Exposed as `aalib.render.html` or as a default export in `renderers/HTMLRenderer`.
 
 <code>aalib.render.html(<i>options:object</i>)</code>
 
@@ -141,12 +179,17 @@ Renders ASCII art image as HTML element.
 
 Options:
 
-* `tagName:string` - use this tag to render HTML element, default: `pre`.
-* `el:HTMLElement` - if defined, use this element as render target. Otherwise create a new element defined in `tagName`.
-* `fontFamily:string` - font used in rendering, default: `monospace`.
-* `charset:string[]` - alphabet used in rendering, default: printable ASCII characters (range <32, 127>)
+* `tagName:string` - tag name of the rendered HTML element, default: `pre`.
+* `el:HTMLElement` - if defined, use this element as render target. Otherwise create a new element defined by `tagName`.
+* `fontFamily:string` - font being used while rendering, default: `monospace`.
+* `fontSize:number` - font size of the rendered text, default: `7px`.
+* `charset:string[]` - a list of characters being used while rendering, default: printable ASCII characters (range <32, 127>).
+* `background:string` - background color of target HTML element, default `#FFF`.
+* `color:string` - color of the text. Ignored if output image is not monochrome (see `colored` in AA options), default: `#000`.
 
 #### CanvasRenderer
+
+Exposed as `aalib.render.canvas` or as a default export in `renderers/CanvasRenderer`.
 
 <code>aalib.render.canvas(<i>options:object</i>)</code>
 
@@ -154,13 +197,16 @@ Renders ASCII art image as Canvas element.
 
 Options:
 
-* `fontSize:number` - defines font size, default: 7.
-* `lineHeight:number` - defines line height, default: 7.
+* `fontSize:number` - font size of the rendered text, default: `7px`.
+* `fontFamily:string` - font being used while rendering, default: `monospace`.
+* `lineHeight:number` - defines line height, default: 7px.
+* `charWidth:number` - defines the width of the characters, default: 4.2px.
 * `width:number` - defines canvas width in pixels, default: 400.
 * `height:number` - defines canvas height in pixels, default: 300.
-* `el:HTMLElement` - if defined, use this element as render target. Otherwise create a new one.
-* `fontFamily:string` - font used in rendering, default: `monospace`.
-* `charset:string[]` - alphabet used in rendering, default: `ASCII` charset.
+* `el:HTMLElement` - if defined, use this element as render target. Otherwise create a new canvas.
+* `charset:string[]` - a list of characters being used while rendering, default: printable ASCII characters (range <32, 127>).
+* `background:string` - background color of canvas, default `#FFF`.
+* `color:string` - color of the text. Ignored if output image is not monochrome (see `colored` in AA options), default: `#000`.
 
 ## License
 The MIT License (MIT). Copyright (c) 2017 mirz (that.mirz@gmail.com)
