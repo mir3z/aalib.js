@@ -1,4 +1,4 @@
-import BaseRenderer from "../../src/renderers/BaseRenderer";
+import BaseRenderer from "./BaseRenderer";
 
 export { ASCII_CHARSET, SIMPLE_CHARSET } from "./BaseRenderer";
 

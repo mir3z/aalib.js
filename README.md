@@ -54,8 +54,23 @@ transformed by [map](http://reactivex.io/documentation/operators/map.html) opera
 to perform any operation (like logging or side-effects) by using [do](http://reactivex.io/documentation/operators/do.html) operator.
 
 The library is distributed as:
-* a standalone UMD library (see `dist` directory) - exposed as a global `aalib` namespace.
-* ES6 modules (see `lib` directory).
+* a standalone UMD library (see `dist` directory) - exposed as a global `aalib` namespace. Dedicated for use in browsers.
+
+```
+<script type="text/javascript" src="dist/aalib.js"></script>
+```
+
+* ES6 modules (see `lib` directory) - for node.js
+
+```
+const aalib = require("aalib.js");
+
+// or
+
+import aalib from "aalib.js";
+```
+
+You may also want to load separate files by importing/requiring directly from "aalib.js/lib"
 
 ## API
 
@@ -65,7 +80,7 @@ These are objects which read from various sources and write to a processing stre
 
 #### ImageReader
  
-Exposed in `aalib.read.image` and as a default export in `readers/ImageReader`.
+Exposed in `aalib.read.image` and as a default export in `lib/readers/ImageReader`.
  
 Factory methods:
 
@@ -75,7 +90,7 @@ and returns observable.
 
 #### VideoReader
 
-Exposed in `aalib.read.video` and as a default export in `readers/VideoReader`.
+Exposed in `aalib.read.video` and as a default export in `lib/readers/VideoReader`.
  
 Factory methods:
 
@@ -88,7 +103,7 @@ from given `HTMLVideoElement` and returns observable.
 
 #### ImageDataReader
 
-Exposed as `aalib.read.imageData` or as a default export in `readers/ImageDataReader`.
+Exposed as `aalib.read.imageData` or as a default export in `lib/readers/ImageDataReader`.
 
 Use the `fromImageData` factory method to create observable from an image data object.
 An image data object contains three mandatory fields; `width`, `height`, and `data`.
@@ -106,17 +121,15 @@ or "light" character.
 
 #### inverse
 
-Exposed as `aalib.filter.inverse` or as a default export in `filters/inverse`.
+Exposed as `aalib.filter.inverse` or as a default export in `lib/filters/inverse`.
 
-<code>
-aalib.filter.inverse()
-</code>
+<code>aalib.filter.inverse()</code>
 
 This filter inverses each component of an image. By inversion I mean the function: `f(x) = 255 - x`
 
 #### linear
 
-Exposed as `aalib.filter.linear` or as a default export in `filters/linear`.
+Exposed as `aalib.filter.linear` or as a default export in `lib/filters/linear`.
 
 <code>aalib.filter.linear(<i>a:number</i>, <i>b:number</i>)</code>
 
@@ -124,7 +137,7 @@ It applies the linear transformation: `f(x) = ax + b`
 
 #### brightness
 
-Exposed as `aalib.filter.brightness` or as a default export in `filters/brightness`.
+Exposed as `aalib.filter.brightness` or as a default export in `lib/filters/brightness`.
 
 <code>aalib.filter.brightness(<i>value:number</i>)</code>
 
@@ -132,17 +145,26 @@ It changes the brightness of an image. This is the special case of the linear fi
 
 #### contrast
 
-Exposed as `aalib.filter.contrast` or as a default export in `filters/contrast`.
+Exposed as `aalib.filter.contrast` or as a default export in `lib/filters/contrast`.
 
 <code>aalib.filter.contrast(<i>value:number</i>)</code>
 
 It changes the contrast of an image. This is the special case of the linear filter where `b = 0`.
 
+
+#### desaturate
+
+Exposed as `aalib.filter.desaturate` or as a default export in `lib/filters/desaturate`.
+
+<code>aalib.filter.desaturate()</code>
+
+It desaturates (converts to a grayscale) an image.
+
 ### AA
 
 This processor handles actual conversion to ASCII art image.
 
-Exposed as `aalib.aa` or as a default export in `aa`.
+Exposed as `aalib.aa` or as a default export in `lib/aa`.
 
 <code>aalib.aa(<i>options:object</i>)</code>
 
@@ -163,7 +185,7 @@ By default two charsets are defined are defined:
 
 They are exposed in each renderer as named export:
 
-`import { ASCII_CHARSET, SIMPLE_CHARSET } from "renderers/HTMLRenderer";`
+`import { ASCII_CHARSET, SIMPLE_CHARSET } from "lib/renderers/HTMLRenderer";`
 
 or as
 
@@ -171,7 +193,7 @@ or as
 
 #### HTMLRenderer
 
-Exposed as `aalib.render.html` or as a default export in `renderers/HTMLRenderer`.
+Exposed as `aalib.render.html` or as a default export in `lib/renderers/HTMLRenderer`.
 
 <code>aalib.render.html(<i>options:object</i>)</code>
 
@@ -189,7 +211,7 @@ Options:
 
 #### CanvasRenderer
 
-Exposed as `aalib.render.canvas` or as a default export in `renderers/CanvasRenderer`.
+Exposed as `aalib.render.canvas` or as a default export in `lib/renderers/CanvasRenderer`.
 
 <code>aalib.render.canvas(<i>options:object</i>)</code>
 

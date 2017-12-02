@@ -12,7 +12,9 @@ import html from "./renderers/HTMLRenderer";
 import canvas from "./renderers/CanvasRenderer";
 import { SIMPLE_CHARSET, ASCII_CHARSET } from "./renderers/BaseRenderer";
 
-export { default as aa } from "./aa";
+import aa from "./aa";
+
+export { aa };
 
 export const read = {
     image: {
@@ -46,4 +48,12 @@ export const render = {
 export const charset = {
     SIMPLE_CHARSET,
     ASCII_CHARSET
+};
+
+export default {
+    aa,
+    read,
+    filter,
+    render,
+    charset
 };
