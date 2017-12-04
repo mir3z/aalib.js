@@ -70,7 +70,7 @@ const aalib = require("aalib.js");
 import aalib from "aalib.js";
 ```
 
-You may also want to load separate files by importing/requiring directly from "aalib.js/lib"
+You may also want to load separate files by importing/requiring directly from `aalib.js/lib`:
 
 ## API
 
@@ -80,7 +80,7 @@ These are objects which read from various sources and write to a processing stre
 
 #### ImageReader
  
-Exposed in `aalib.read.image` and as a default export in `lib/readers/ImageReader`.
+Exposed in `aalib.read.image` and as a default export in `aalib.js/lib/readers/ImageReader`.
  
 Factory methods:
 
@@ -90,7 +90,7 @@ and returns observable.
 
 #### VideoReader
 
-Exposed in `aalib.read.video` and as a default export in `lib/readers/VideoReader`.
+Exposed in `aalib.read.video` and as a default export in `aalib.js/lib/readers/VideoReader`.
  
 Factory methods:
 
@@ -103,7 +103,7 @@ from given `HTMLVideoElement` and returns observable.
 
 #### ImageDataReader
 
-Exposed as `aalib.read.imageData` or as a default export in `lib/readers/ImageDataReader`.
+Exposed as `aalib.read.imageData` or as a default export in `aalib.js/lib/readers/ImageDataReader`.
 
 Use the `fromImageData` factory method to create observable from an image data object.
 An image data object contains three mandatory fields; `width`, `height`, and `data`.
@@ -121,7 +121,7 @@ or "light" character.
 
 #### inverse
 
-Exposed as `aalib.filter.inverse` or as a default export in `lib/filters/inverse`.
+Exposed as `aalib.filter.inverse` or as a default export in `aalib.js/lib/filters/inverse`.
 
 <code>aalib.filter.inverse()</code>
 
@@ -129,7 +129,7 @@ This filter inverses each component of an image. By inversion I mean the functio
 
 #### linear
 
-Exposed as `aalib.filter.linear` or as a default export in `lib/filters/linear`.
+Exposed as `aalib.filter.linear` or as a default export in `aalib.js/lib/filters/linear`.
 
 <code>aalib.filter.linear(<i>a:number</i>, <i>b:number</i>)</code>
 
@@ -137,7 +137,7 @@ It applies the linear transformation: `f(x) = ax + b`
 
 #### brightness
 
-Exposed as `aalib.filter.brightness` or as a default export in `lib/filters/brightness`.
+Exposed as `aalib.filter.brightness` or as a default export in `aalib.js/lib/filters/brightness`.
 
 <code>aalib.filter.brightness(<i>value:number</i>)</code>
 
@@ -145,7 +145,7 @@ It changes the brightness of an image. This is the special case of the linear fi
 
 #### contrast
 
-Exposed as `aalib.filter.contrast` or as a default export in `lib/filters/contrast`.
+Exposed as `aalib.filter.contrast` or as a default export in `aalib.js/lib/filters/contrast`.
 
 <code>aalib.filter.contrast(<i>value:number</i>)</code>
 
@@ -154,7 +154,7 @@ It changes the contrast of an image. This is the special case of the linear filt
 
 #### desaturate
 
-Exposed as `aalib.filter.desaturate` or as a default export in `lib/filters/desaturate`.
+Exposed as `aalib.filter.desaturate` or as a default export in `aalib.js/lib/filters/desaturate`.
 
 <code>aalib.filter.desaturate()</code>
 
@@ -193,7 +193,7 @@ or as
 
 #### HTMLRenderer
 
-Exposed as `aalib.render.html` or as a default export in `lib/renderers/HTMLRenderer`.
+Exposed as `aalib.render.html` or as a default export in `aalib.js/lib/renderers/HTMLRenderer`.
 
 <code>aalib.render.html(<i>options:object</i>)</code>
 
@@ -211,7 +211,7 @@ Options:
 
 #### CanvasRenderer
 
-Exposed as `aalib.render.canvas` or as a default export in `lib/renderers/CanvasRenderer`.
+Exposed as `aalib.render.canvas` or as a default export in `aalib.js/lib/renderers/CanvasRenderer`.
 
 <code>aalib.render.canvas(<i>options:object</i>)</code>
 
