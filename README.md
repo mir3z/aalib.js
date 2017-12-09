@@ -15,7 +15,7 @@ It is written entirely in JavaScript and is intended to use in web browsers.
 
 ## Interactive demo
 
-TBD
+[Click here](http://mir3z.github.io/aalib.js/playground/www/)
 
 ## Usage
 
