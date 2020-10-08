@@ -10,6 +10,7 @@ import desaturate from "./filters/desaturate";
 
 import html from "./renderers/HTMLRenderer";
 import canvas from "./renderers/CanvasRenderer";
+import base from "./renderers/BaseRenderer";
 import { SIMPLE_CHARSET, ASCII_CHARSET } from "./renderers/BaseRenderer";
 
 import aa from "./aa";
@@ -42,7 +43,8 @@ export const filter = {
 
 export const render = {
     html,
-    canvas
+    canvas,
+    base
 };
 
 export const charset = {
