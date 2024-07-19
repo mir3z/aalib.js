@@ -1,0 +1,330 @@
+@font-face {
+    font-family: 'Sora';
+    src: url('../resources/sora-mono/Sora-Regular-mono.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'SoraFont';
+    src: url('../resources/sora-ttf/Sora-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Kode';
+    src: url('../resources/kode-mono/KodeMono-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'OpenSans';
+    src: url('../resources/open-sans/OpenSans-Regular.ttf') format('truetype');
+}
+
+ .sliderContainer > p{
+    margin: 8px 0;
+ }
+
+ html{
+    margin: auto;
+ }
+/* Track */
+::-webkit-scrollbar-track {
+    background: #F4F6FC ;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+     background: #8796A9 ;
+     border-radius: 4px; 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: #8796A9;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;              /* height of horizontal scrollbar ← You're missing this */
+}
+
+body{
+    font-family: 'SoraFont';
+    display: flex;
+    justify-content: flex-start; /* Aligns children to each side of the container */
+    height: 100vh;
+    margin: 0;
+}
+
+h1{
+    margin-top: 0;
+    font-weight: 400;
+}
+h2,h3{
+
+    font-size: 18px;
+}
+
+#gradient-canvas {
+    border: 1px solid white;
+    cursor: pointer;
+    display: flex;
+    width: 100%;
+    height: 80px;
+    border-radius: 8px;
+}
+p{
+    font-size: small;
+}
+
+
+.image-section{
+    /* display: flex;
+    flex-direction: row; */
+}
+.image-section .div{
+    /* background-color: white; */
+    /* justify-content: space-evenly; */
+}
+
+#preset-container{
+    background-color:#173044;
+    color: white;
+    padding: 20px ;
+    margin-left: 0;
+    margin-right: 0;
+    display: block;
+    overflow-y: scroll;
+    overflow-x: hidden; 
+    max-height: 100vh;
+    width: 35vw;
+}
+
+#image-import{
+    padding-top: 30px;
+    /* height: 100%; */
+    /* width: 70vw; */
+    /* overflow-y: scroll;
+    overflow-x: scroll;  */
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-around; 
+    align-items: space-around; 
+}
+
+/* a container for the image, place the image in the middle */
+/* move the vertical one to the center */
+#imported-image{
+    max-width: 100%; /* Ensure the image does not exceed the frame's width */
+    max-height: 100%; /* Ensure the image does not exceed the frame's height */
+    object-fit: contain; /* Ensures the image maintains its aspect ratio */
+    border-radius: 10px; /* Match the frame's border-radius to create a mask effect */
+}
+
+#imported-image-frame {
+    width: 224px; /* Set a fixed width */
+    height: 168px; /* Set a fixed height */
+    border-radius: 10px;
+    border: 1px solid #8796A9;
+    margin-left: 20px; /* Add some margin to separate from the rest */
+    margin-right: 20px;   
+    position: sticky; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
+}
+#canvas-container {
+    width: 100%; /* Fixed width */
+    height: auto; /* Fixed height */
+    overflow: auto; /* Enable scroll bars when content overflows */
+    padding-bottom: 30px;
+}
+
+#processed-image {
+    display: block; /* Ensures the canvas is treated as a block-level element */
+    width: 100%; /* Make the image stretch to fill the container */
+    height: auto; /* Ensure the height adjusts to maintain the aspect ratio */
+}
+
+.container {
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: flex-start; /* Center-align the children */
+    justify-content: start; /* Align items to the start of the container */
+    width: 100%;
+    gap: 20px; /* Optional: adds some space between the children */
+    overflow: auto;
+
+}
+
+.sliderContainer{
+    text-align: left; 
+    width: 100%;
+    margin-top: 0;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
+
+#brightness, #contrast{
+    width: 300px;
+    min-width: 100px;
+}
+/* #gradient-picker{
+    display: flex;
+    flex-direction: column;
+} */
+.gradient-selection-container{
+   display: flex;
+   flex-direction: row;
+   justify-content: flex-start;
+   align-content: center;
+   margin-left: -4.5px;
+
+}
+.gradient-group{
+    display: flex;
+    flex-direction: column;
+}
+.slider-values{
+    display: flex; 
+    justify-content: space-between;
+}
+hr{
+    border-color: #8796A9;
+}
+.sliderValue{
+    font-weight: regular;
+    font-size: smaller;
+}
+/* Base styles for form elements */
+input, select, button {
+    padding: 5px 4px; /* Adequate padding */
+    margin: 5px; /* Spacing around elements */
+    border: 1px solid #F4F6FC ; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    align-self: center;
+    justify-content: center;
+
+}
+select option:active, select option:hover{
+    background-color: #00DECC;
+
+}
+
+input[type="checkbox"]{
+    accent-color: #00DECC;
+}
+ 
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none; 
+    width: 90%;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+    border-radius: 16px;
+    height: 15px;
+}
+  
+ input[type="range"]::-webkit-slider-runnable-track {
+    height: 15px;
+    border-radius: 16px;
+  }
+  
+ input[type="range"]::-moz-range-track {
+    height: 15px;
+    background: #F4F6FC ;
+    border-radius: 16px;
+  }
+  
+ input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none; 
+    height: 15px;
+    width: 15px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2.5px solid #00DECC ;
+    box-shadow: -407px 0 0 400px #00DECC;
+  }
+  
+ input[type="range"]::-moz-range-thumb {
+    height: 15px;
+    width: 15px;
+    background-color: #fff;
+    border-radius: 50%;
+    opacity: 1;
+    /* border: 2px solid #00DECC ; */
+    box-shadow: -407px 0 0 400px #00DECC;
+  }
+
+input[type="color"]{
+    width:70px; 
+    padding: 0.5px;
+}
+
+.slider-values{
+    display:flex;
+    justify-content: space-between
+}
+/* Smaller input sizes */
+input[type="text"],input[type="number"]{
+    max-width: 70px; /* Restricting width for smaller inputs */
+
+}
+#inverse {
+    display: inline-block;
+    margin-top: 0;
+}
+
+input[type="file"] {
+    max-width: 200px; /* Restricting width for smaller inputs */
+    margin-right: 10px; /* Adjust as needed */
+}
+/* Styling for buttons */
+button {
+    background-color: #00DECC; /* A pleasant blue */
+    color: #0A151E; /* White text */
+    width: 130px;
+    height: 30px;
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    white-space: nowrap;
+    text-align: center;
+}
+
+button:hover, button:focus {
+    background-color: #9FF3F0; /* Darker blue on hover/focus */
+}
+
+/* Styling for dropdowns */
+select {
+    min-width: 150px; /* Minimum width */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Focus styles for inputs and buttons */
+input:focus, select:focus, button:focus {
+    border-color: #66afe9; /* Highlight focus with a light blue border */
+    outline: none; /* Remove default focus outline */
+}
+
+@media (max-width: 768px) {
+    #image-import {
+        display: flex; /* Set the display to flex to use Flexbox properties */
+        flex-direction: column; /* Align children horizontally */
+        justify-content: start; /* Space between the children */
+        align-items: start; /* Align items at the start of the container */
+    }
+    #imported-image-frame {
+        width: 224px; /* Smaller width for smaller screens */
+        height: 168px; /* Smaller height for smaller screens */
+        bottom: 20px; /* Distance from the bottom */
+        right: 20px; /* Distance from the right */
+        z-index: 1000; /* Ensure it's above other content */
+    }
+
+    #image-import {
+        flex-direction: column; /* Stack children vertically in smaller views */
+    }
+
+}

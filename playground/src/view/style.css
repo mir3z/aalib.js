@@ -1,5 +1,19 @@
-@import url("https://fonts.googleapis.com/css?family=Lato|Inconsolata|Roboto+Mono|Source+Code+Pro|Ubuntu+Mono|Cutive+Mono");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap|Kode+Mono|Sora|Danfo|Lato|Inconsolata|Roboto+Mono|Source+Code+Pro|Ubuntu+Mono|Cutive+Mono");
 
+/* @font-face {
+    font-family: 'Open Sans', sans-serif;
+    src: url('../../../resources/kode-mono/KodeMono-Regular.ttf') format('truetype');
+  } */
+/* @font-face {
+    font-family: 'Sora', sans-serif;
+    src: url('../../../resources/sora-otf/Sora-Regular.otf') format('opentype');
+    font-weight: 400;
+  }
+
+  @font-face {
+    font-family: 'Kode Mono', sans-serif;
+    src: url('../../../resources/kode-mono/KodeMono-Regular.ttf') format('truetype');
+  } */
 
 * {
     box-sizing: border-box;

@@ -21,7 +21,6 @@ export function aa(image, options) {
 
     for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
-
             const color = analyzeColors(
                 image,
                 ~~(j * bw),

@@ -15,27 +15,38 @@ export class HTMLRenderer extends BaseRenderer {
             tagName: "pre",
             fontSize: 7,
             background: "#fff",
-            color: "#000"
+            color: "#000",
+            gradient: null
         }, options));
 
         this.el = this.options.el || document.createElement(this.options.tagName);
         this.el.style.fontSize = this.options.fontSize + "px";
         this.el.style.fontFamily = this.options.fontFamily;
         this.el.style.backgroundColor = this.options.background;
-    }
 
+    }
     render(image) {
         super.render(image);
 
         if (!image.meta.colored) {
-            this.el.style.color = this.options.color;
+            this.el.style.color = this.options.gradient;
         }
-
-        const renderer = image.meta.colored
-            ? colorRenderer(this.el)
-            : monoRenderer(this.el);
-
+        const renderer = colorRenderer(this.el);
+        //  image.meta.colored
+        //     ? colorRenderer(this.el)
+        //     : monoRenderer(this.el);
         return renderer(image);
+    }
+
+    // issue with this function 
+    createGradient(){
+        const gradient = this.ctx.createLinearGradient(0, 0, this.el.width, this.el.height);
+        this.options.gradient.forEach((color, index) => {
+            gradient.addColorStop(index / (this.options.gradient.length - 1), color);
+        });
+        this.gradient = gradient;
+        console.log("create gradient in html ",gradient);
+
     }
 }
 

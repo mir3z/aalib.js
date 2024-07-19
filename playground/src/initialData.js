@@ -56,7 +56,7 @@ export default {
         color: "#000000",
         charset: ASCII_CHARSET.join(""),
         fontSize: 7,
-        fontFamily: "Ubuntu Mono",
+        fontFamily: "Sora",
         lineHeight: 7,
         charWidth: 4.2,
         width: 1400,
@@ -68,5 +68,5 @@ export default {
         { value: SIMPLE_CHARSET.join(""), title: "Simple" }
     ],
 
-    fonts: ["Inconsolata", "Ubuntu Mono", "Roboto Mono", "Source Code Pro", "Cutive Mono", "monospace"]
+    fonts: ["Sora:wght@100..800&display=swap","Inconsolata", "Ubuntu Mono", "Roboto Mono", "Source Code Pro", "Cutive Mono", "monospace"]
 };

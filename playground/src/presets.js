@@ -19,13 +19,13 @@ export default {
         preset.aa = {
             width: 400,
             height: 120,
-            colored: true
+            colored: false
         };
 
         preset.postFilters[INVERSE_FILTER].enabled = true;
 
         preset.renderer.background = "#000";
-        preset.renderer.fontFamily = "Ubuntu Mono";
+        preset.renderer.fontFamily = "Sora";//"Ubuntu Mono";
 
         return preset;
     },
@@ -41,7 +41,7 @@ export default {
         preset.aa = {
             width: 400,
             height: 123,
-            colored: true
+            colored: false
         };
 
         preset.postFilters[INVERSE_FILTER].enabled = true;
@@ -50,7 +50,7 @@ export default {
         preset.postFilters[BRIGHTNESS_FILTER].value = 25;
 
         preset.renderer.background = "#000";
-        preset.renderer.fontFamily = "Ubuntu Mono";
+        preset.renderer.fontFamily = "Sora";//"Ubuntu Mono";
 
         return preset;
     },
@@ -76,7 +76,7 @@ export default {
         preset.renderer.width = ~~preset.aa.width * preset.renderer.charWidth;
         preset.renderer.height = ~~preset.aa.height * preset.renderer.lineHeight;
         preset.renderer.background = "#000";
-        preset.renderer.fontFamily = "Ubuntu Mono";
+        preset.renderer.fontFamily = "Sora";//"Ubuntu Mono";
 
         return preset;
     },
@@ -95,7 +95,7 @@ export default {
             colored: false
         };
 
-        preset.renderer.fontFamily = "Cutive Mono";
+        preset.renderer.fontFamily = "Sora";//"Cutive Mono";
         preset.renderer.fontSize = 6;
 
         return preset;

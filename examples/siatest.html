@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>aalib.js :: Evangeline</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  
+    <script type="text/javascript" src="../dist/aalib.js"></script>
+
+    <h1> Import Video</h1>
+    <p>Video Settings</p>
+    <input type="file" id="videoInput" accept="video/*">
+    <div id="video-container"></div>
+    
+    <button id="startRecording">Start Recording</button>
+    <button id="stopAndDownload">Stop and Download</button>
+    <canvas id="video-scene"></canvas>
+
+    <h1>Import Image</h1>
+
+    <p>Image Settings</p>
+    <input type="file" id="imageInput" accept="image/*">
+    <div id="image-container"></div>
+
+    <script>
+        const canvas = document.getElementById('video-scene');
+        let mediaRecorder;
+        let recordedChunks = [];
+        setupMediaRecorder(canvas);
+        document.getElementById('startRecording').addEventListener('click', startRecording);
+        document.getElementById('stopAndDownload').addEventListener('click', stopRecording);
+   
+        function setupMediaRecorder(canvas) {
+            const stream = canvas.captureStream(25); // Capture at 25 fps
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+
+            mediaRecorder.ondataavailable = function (event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = function () {
+                const blob = new Blob(recordedChunks, {
+                    type: 'video/mp4'
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'downloaded_video.mp4';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                recordedChunks = []; // Clear the recorded chunks
+            };
+        } function startRecording() {
+            mediaRecorder.start();
+            console.log("Recording started");
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            console.log("Recording stopped");
+        }
+        function fromVideoFile(file) {
+            return new Promise((resolve, reject) => {
+                const video = document.createElement('video');
+                console.log("url ", URL.createObjectURL(file));
+                video.src = URL.createObjectURL(file);
+                video.controls = true;  // Add controls so users can play/pause
+                video.autoplay = true;  // Set autoplay to true to start playing automatically
+                video.muted = true;     // Mute the video to allow autoplay in most browsers
+                video.loop = true;      // Optional: Loop the video
+
+                video.onloadedmetadata = () => {
+                    document.getElementById('video-container').appendChild(video);  // Append to a specific container
+                    resolve(video);
+                };
+
+                video.onerror = () => {
+                    reject(new Error("Failed to load video"));
+                };
+            });
+        }
+
+        document.getElementById('videoInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                fromVideoFile(file).then(video => {
+                    console.log("video", video);
+                    aalib.read.video.fromVideoElement(video)
+                        .map(aalib.aa({ width: 165, height: 68 }))
+                        .map(aalib.render.canvas({
+                            width: 696,
+                            height: 476,
+                            fontFamily: "Sora",
+                            el: document.querySelector("#video-scene")
+                        }))
+                        .subscribe();
+                }).catch(error => {
+                    console.error("Error loading video:", error);
+                });
+            }
+        });
+
+        document.getElementById('imageInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = new Image();
+
+                    img.src = e.target.result;
+                    img.alt = 'Uploaded Image';
+                    img.onload = function () {
+                        // Image is loaded and can be manipulated or displayed
+                        aalib.read.image.fromURL(img.src)
+                            .map(aalib.aa({ width: 200, height: 59, colored: false }))
+                            .map(aalib.render.html({ background: "new rgba(0,0,0,)", color: 'red', fontFamily: "Sora" }))
+                            .do(function (el) {
+                                document.body.appendChild(el);
+                            })
+                            .subscribe(); // Optionally, you can now process the image further
+
+                    };
+                };
+
+                reader.onerror = function () {
+                    console.error('Error loading the image');
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                console.error('File is not an image');
+            }
+        });
+
+    </script>
+</body>
+
+</html>

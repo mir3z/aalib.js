@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>aalib.js</title>
+    <script type="text/javascript" defer src="bundle.js"></script>
+    <style>
+        canvas {
+            border: 1px solid red;
+        }
+
+        canvas, pre {
+            font-size: 7px;
+            display: block;
+            text-align: center;
+            border: 1px solid #efefef;
+        }
+    </style>
+</head>
+<body>
+
+    hello im sia dev
+    <h1> Import Video</h1>
+    <p>Video Settings</p>
+    <input type="file" id="videoInput" accept="video/*">
+    <div id="video-container"></div>
+    
+    <button id="startRecording">Start Recording</button>
+    <button id="stopAndDownload">Stop and Download</button>
+    <canvas id="video-scene"></canvas>
+
+    <h1>Import Image</h1>
+
+    <p>Image Settings</p>
+    <input type="file" id="imageInput" accept="image/*">
+    <div id="image-container"></div>
+
+</body>
+</html>

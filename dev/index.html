@@ -1,21 +1,178 @@
 <!DOCTYPE html>
 <html>
+
 <head lang="en">
     <meta charset="UTF-8">
-    <title>aalib.js</title>
-    <script type="text/javascript" defer src="bundle.js"></script>
-    <style>
-        canvas {
-            border: 1px solid red;
-        }
-
-        canvas, pre {
-            font-size: 7px;
-            display: block;
-            text-align: center;
-            border: 1px solid #efefef;
-        }
-    </style>
+    <title>Sia ASCII tool</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    <script type="text/javascript" defer src="./bundle.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body></body>
+
+<body>
+    <div class = "container" id="preset-container">
+        <h1>Sia ASCII Generator</h1>
+        <h2>Preset</h2>
+        <select name="preset-selection" id="preset-selection">
+            <option value="preset-1">Gradient</option>
+            <option value="preset-2">Big Letters</option>
+            <option value="preset-3">Gray</option>
+        </select>
+
+        <div style="justify-content: start;" class="sliderContainer" style="margin-top: -10px;">
+            <input type="file" id="load-preset" accept="application/json">
+       <button id="save-preset">Save preset</button>
+    </div>
+    <h3></h3>
+    <hr>
+
+    <h3>Filters</h3>
+    <div class="sliderContainer" >
+        <p style="margin-top: 0;">Inverse</p>
+        <input id="inverse" type="checkbox" >
+    </div>
+
+    <!-- <div><span>Desaturate</span>
+        <input id="desaturate" type="checkbox" >
+    </div> -->
+    <div class="sliderContainer">
+            <p >Brightness</p>
+            <input type="range" id="brightness" min="0" max="10" step="0.1" value="0.5" class="myRange">
+            <div class="slider-values" >
+                <!-- <span class="min">0</span> -->
+                <span class="sliderValue">0.5</span>
+                <!-- <span class="max">1</span> -->
+        </div>
+    </div>
+
+    <div class="sliderContainer" >
+            <p >Contrast</p>
+            <input type="range" id="contrast" min="0" max="1" step="0.1" value="0.5" class="myRange" >
+            <div class="slider-values">
+                <!-- <span class="min">0</span> -->
+            <span class="sliderValue">0.5</span>
+            <!-- <span class="max">1</span> -->
+    </div>
+    </div>
+
+
+    <!-- <p>Desaturation</p>
+    <div class="sliderContainer">
+        <span class="min">0</span> <input type="range" id="desaturation" min="0" max="1" step="0.1" value="0.5"
+            class="myRange"><span class="max">1</span>
+            value: <span class="sliderValue">0.5</span>
+    </div> -->
+    <hr>
+
+    <div class="gradient-container">
+        <h3>Gradient</h3>
+        <!-- <input type="file" id="gradient-file-input" accept="application/json"> -->
+        <div id="gradient-picker">
+            <canvas id="gradient-canvas" ></canvas>
+
+        <div style="margin-top: 10px;" class="gradient-selection-container">
+            <div class="gradient-group">
+                <input type="color" id="color1" value="">
+                <input type="number" id="position1" min="0" max="100" value="20">
+            </div>
+            <div class="gradient-group">
+                <input type="color" id="color2" value="">
+                <input type="number" id="position2" value="80">
+            </div>
+            <div class="gradient-group">
+                <input type="color" id="color3" value="">
+                <input type="number" id="position3" value="100">
+            </div>
+        </div></div>
+    </div>
+<!-- intentional spacer -->
+    <h3></h3>
+    <hr>
+        <h3>Character Setting</h3>
+        <!-- <div style="margin-top: -5px;"> -->
+        <!-- <div class="sliderContainer" >
+            <p style="margin: 0;">Font family</p>
+            <select id="font-dropdown" >
+                <option value="monospace" style="font-family: monospace;">Monospace</option>
+                <option value="Sora" style="font-family: 'Sora';">Sora</option>
+                <option value="Kode" style="font-family: 'Kode';">Kode-Mono</option>
+                <option value="OpenSans" style="font-family: 'Open-Sans';">Open-Sans</option>
+            </select>
+        </div>   -->
+
+        <div class="sliderContainer">
+            <p style="margin: 0;">Font size</p>
+            <input id="fontSize" type="number"  value="">
+        </div>
+
+        <!-- <div class="sliderContainer">
+            <p>Line height</p>
+            <input id="lineHeight" type="number"  value="">
+        </div>
+
+        <div class="sliderContainer">
+            <p>Character width</p>
+            <input id="charWidth" type="number"  value="">
+        </div> -->
+
+        <div class="sliderContainer">
+            <p>Charset</p>
+            <select id="charset-selector">
+                <option value="SIA/">SIA/</option>
+                <option value="ASCII">ASCII</option>
+            </select>
+        </div>
+    </div>
+</div>
+        <!-- <button id="save-gradient">Save Gradient</button> -->
+
+
+    <!-- <div class="import-container" id="video-import">
+        <h1> Import Video</h1>
+        <p>Video Settings</p>
+        <div id="generated-video"></div>
+        <input type="file" id="videoInput" accept="video/*">
+        <div id="video-container"></div>
+
+        <button id="startRecording">Start Recording</button>
+        <button id="stopAndDownload">Stop and Download</button>
+        <canvas id="video-scene"></canvas>
+    </div> -->
+</div>
+<div style="overflow-y: scroll;"class="container">
+
+<div class="image-section import-container " id="image-import">
+    <div>
+        <h2 style="margin-top: 0;">Import image</h2>
+        <p>Image settings</p>
+        <div id="generated-image"></div>
+        <div style="display: flex; justify-content: flex-start; width: 400px; "class="sliderContainer">
+            <input type="file" id="imageInput" accept="image/*">
+            <select  id="image-dropdown">
+                <option value="canvas">Canvas</option>
+                <option value="html">HTML</option>
+            </select>
+        </div>
+        <div id="image-container">
+            <p>Image export</p>
+            <div id="slidercontainer">
+                <!-- make it as a dropdown of size change -->
+                <input type="number" id="imageExportRatio" value="1" max="10" min="1">
+                <button id="save-image">Save image</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="imported-image-frame">
+        <img id="imported-image"> </img>
+    </div>
+</div>
+
+<div id="canvas-container">
+    <canvas id="processed-image"></canvas>
+</div>
+</div>
+
+</body>
+
 </html>

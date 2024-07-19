@@ -67,6 +67,10 @@ function resolveFilter([ type, { enabled, value }]) {
 function resolveReader({ type, url }) {
     return {
         [ READERS.IMAGE_READER ]: () => ImageReader.fromURL(url),
+        [ READERS.VIDEO_READER ]: () => VideoReader.fromURL(
+            url,
+            { autoplay: true }
+        ),
         [ READERS.VIDEO_READER ]: () => VideoReader.fromVideoElement(
             document.querySelector((".preview-video")),
             { autoplay: true }
